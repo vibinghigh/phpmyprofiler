@@ -33,8 +33,8 @@ $sql = 'SELECT id, date, title, text FROM pmp_news ORDER BY date DESC LIMIT 0, 1
 $res = dbexec($sql);
 
 $news = array();
-if ( mysql_num_rows($res) > 0 ) {
-	while ( $row = mysql_fetch_object($res) ) {
+if ( mysqli_num_rows($res) > 0 ) {
+	while ( $row = mysqli_fetch_object($res) ) {
 		$news[] = $row;
     }
 }
@@ -45,13 +45,13 @@ $sql = 'SELECT pmp_film.id FROM pmp_film
 	LEFT JOIN pmp_boxset ON pmp_film.id = pmp_boxset.childid
 	WHERE collectiontype != \'Ordered\' AND collectiontype != \'Wish List\'
 	AND pmp_boxset.childid IS NULL
-	AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = \'' . mysql_real_escape_string($pmp_exclude_tag) . '\')
+	AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = \'' . mysqli_real_escape_string($_SESSION['db'], $pmp_exclude_tag) . '\')
 	ORDER BY ' . $pmp_start_sort_order . ' DESC LIMIT 0, ' . $pmp_dvd_start;
 $res = dbexec($sql);
 
 $new = array();
-if ( mysql_num_rows($res) > 0 ) {
-	while ( $row = mysql_fetch_object($res) ) {
+if ( mysqli_num_rows($res) > 0 ) {
+	while ( $row = mysqli_fetch_object($res) ) {
 		$new[] = new smallDVD($row->id);
 	}
 }
@@ -62,13 +62,13 @@ $sql = 'SELECT pmp_film.id FROM pmp_film
 	LEFT JOIN pmp_boxset ON pmp_film.id = pmp_boxset.childid
 	WHERE collectiontype = \'Ordered\'
 	AND pmp_boxset.childid IS NULL
-	AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = \'' . mysql_real_escape_string($pmp_exclude_tag) . '\')
+	AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = \'' . mysqli_real_escape_string($_SESSION['db'], $pmp_exclude_tag) . '\')
 	ORDER BY purchdate DESC LIMIT 0, ' . $pmp_dvd_start;
 $res = dbexec($sql);
 
 $order = array();
-if ( mysql_num_rows($res) > 0 ) {
-    while ( $row = mysql_fetch_object($res) ) {
+if ( mysqli_num_rows($res) > 0 ) {
+    while ( $row = mysqli_fetch_object($res) ) {
 	$order[] = new smallDVD($row->id);
     }
 }
@@ -77,9 +77,9 @@ $smarty->assign('ordered', $order);
 // Number of DVDs
 $query = 'SELECT SUM(countas) AS count FROM pmp_film
 	WHERE collectiontype != \'Ordered\' AND collectiontype != \'Wish List\'
-	AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = \'' . mysql_real_escape_string($pmp_exclude_tag) . '\')';
+	AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = \'' . mysqli_real_escape_string($_SESSION['db'], $pmp_exclude_tag) . '\')';
 $result = dbexec($query);
-$smarty->assign('count', mysql_result($result, 0, 'count'));
+$smarty->assign('count', mysqli_result($result, 0, 'count'));
 
 // Counter
 $smarty->assign('counter', inccounter());
@@ -87,8 +87,8 @@ $smarty->assign('counter', inccounter());
 // Last update
 $query = 'SELECT data FROM pmp_statistics WHERE type = \'last_update\'';
 $result = dbexec($query);
-if ( mysql_num_rows($result) > 0 ) {
-	$smarty->assign('last_update', strftime($pmp_dateformat, strtotime(mysql_result($result, 0, 'data'))));
+if ( mysqli_num_rows($result) > 0 ) {
+	$smarty->assign('last_update', strftime($pmp_dateformat, strtotime(mysqli_result($result, 0, 'data'))));
 }
 
 dbclose();

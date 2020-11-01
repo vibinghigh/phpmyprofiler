@@ -47,7 +47,7 @@ else {
 
     $query = 'SELECT name AS region, data AS count FROM pmp_statistics WHERE type = \'regions\' GROUP BY region';
     $result = dbexec($query);
-	$rows = mysql_num_rows($result);
+	$rows = mysqli_num_rows($result);
 
     if ( $rows == 0 ) {
 	header('Content-Type: image/gif');
@@ -57,7 +57,7 @@ else {
 	@readfile('../themes/default/images/empty.gif');
     }
     else {
-	while ( $row = mysql_fetch_object($result) ) {
+	while ( $row = mysqli_fetch_object($result) ) {
 	    $Region[] = $row->count;
 	    $Legend[] = 'Regionalcode ' . $row->region;
 	}

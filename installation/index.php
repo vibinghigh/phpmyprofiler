@@ -92,7 +92,7 @@ header('Content-type: text/html; charset=utf-8');
 		function check_mysql() {
 		    global $failed;
 
-		    if ( function_exists( 'mysql_connect' ) ) {
+		    if ( function_exists( 'mysqli_connect' ) ) {
 			echo '<b><font color="green">' . t('Available') . '</font></b>';
 		    }
 		    else {

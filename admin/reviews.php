@@ -42,22 +42,22 @@ dbconnect();
 if ( !empty($_GET['id']) ) {
 	switch ($_GET['action']) {
 		case "delete":
-			$sql = "SELECT * FROM pmp_reviews WHERE id = " . mysql_real_escape_string($_GET['id']);
+			$sql = "SELECT * FROM pmp_reviews WHERE id = " . mysqli_real_escape_string($_SESSION['db'], $_GET['id']);
 			$res = dbexec($sql);
-			$row = mysql_fetch_object($res);
-			$sql = "DELETE FROM pmp_reviews WHERE id = " . mysql_real_escape_string($_GET['id']);
+			$row = mysqli_fetch_object($res);
+			$sql = "DELETE FROM pmp_reviews WHERE id = " . mysqli_real_escape_string($_SESSION['db'], $_GET['id']);
 			$res = dbexec($sql);
 
 			$smarty->assign('Success', t('Review deleted.'));
 			break;
 
 		case "activate":
-			$sql = "UPDATE pmp_reviews SET status = 1 WHERE id = " . mysql_real_escape_string($_GET['id']);
+			$sql = "UPDATE pmp_reviews SET status = 1 WHERE id = " . mysqli_real_escape_string($_SESSION['db'], $_GET['id']);
 			$res = dbexec($sql);
 
-			$sql = "SELECT * FROM pmp_reviews WHERE id = " . mysql_real_escape_string($_GET['id']);
+			$sql = "SELECT * FROM pmp_reviews WHERE id = " . mysqli_real_escape_string($_SESSION['db'], $_GET['id']);
 			$res = dbexec($sql);
-			$row = mysql_fetch_object($res);
+			$row = mysqli_fetch_object($res);
 
 			$smarty->assign('Success', t('Review activated.'));
 			break;
@@ -75,8 +75,8 @@ $res = dbexec($sql);
 
 $pending = array();
 
-if ( mysql_num_rows($res) > 0 ) {
-	while ( $row = mysql_fetch_object($res) ) {
+if ( mysqli_num_rows($res) > 0 ) {
+	while ( $row = mysqli_fetch_object($res) ) {
 		$row->date = strftime($pmp_dateformat, strtotime($row->date));
 		$row->name = htmlentities($row->name);
 		$row->text = htmlentities($row->text, ENT_QUOTES, 'UTF-8');
@@ -91,8 +91,8 @@ $res = dbexec($sql);
 
 $active = array();
 
-if ( mysql_num_rows($res) > 0 ) {
-	while ( $row = mysql_fetch_object($res) ) {
+if ( mysqli_num_rows($res) > 0 ) {
+	while ( $row = mysqli_fetch_object($res) ) {
 		$row->date = strftime($pmp_dateformat, strtotime($row->date));
 		$row->name = htmlentities($row->name);
 		$row->text = htmlentities($row->text, ENT_QUOTES, 'UTF-8');

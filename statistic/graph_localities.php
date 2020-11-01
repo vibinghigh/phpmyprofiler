@@ -47,7 +47,7 @@ else {
 
     $query = 'SELECT name AS locality, data AS count FROM pmp_statistics WHERE type = \'localities\' ORDER BY LPAD(data, 20, \'0\') DESC';
     $result = dbexec($query);
-	$rows = mysql_num_rows($result);
+	$rows = mysqli_num_rows($result);
 
     if ( $rows == 0 ) {
 	header('Content-Type: image/gif');
@@ -57,7 +57,7 @@ else {
 	@readfile('../themes/default/images/empty.gif');
     }
     else {
-	while ( $row = mysql_fetch_object($result) ) {
+	while ( $row = mysqli_fetch_object($result) ) {
 	    $Locality[] = $row->count;
 		$Legend[] = entity_to_decimal_value(trunc(t($row->locality), 30));
 	}

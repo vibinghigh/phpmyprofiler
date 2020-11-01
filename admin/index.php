@@ -51,14 +51,14 @@ else {
 	$sql = 'SELECT id FROM pmp_guestbook';
 	$res = dbexec($sql);
 
-	if ( mysql_num_rows($res) > 0 ) {
+	if ( mysqli_num_rows($res) > 0 ) {
 		$smarty->assign('gbfound', true);
 
 		// Check for new GB entries
 		if ( $pmp_guestbook_activatenew == false ) {
 			$sql = 'SELECT id FROM pmp_guestbook WHERE status = 0';
 			$res = dbexec($sql);
-			$smarty->assign('guestbook', mysql_num_rows($res));
+			$smarty->assign('guestbook', mysqli_num_rows($res));
 		}
 	}
 
@@ -66,19 +66,19 @@ else {
 	$sql = 'SELECT id FROM pmp_film';
 	$res = dbexec($sql);
 
-	if ( mysql_num_rows($res) > 0 ) {
+	if ( mysqli_num_rows($res) > 0 ) {
 		// Check reviews
 		$sql = 'SELECT id FROM pmp_reviews';
 		$res = dbexec($sql);
 
-		if ( mysql_num_rows($res) > 0 ) {
+		if ( mysqli_num_rows($res) > 0 ) {
 			$smarty->assign('reviewsfound', true);
 
 			// Check for new Reviews
 			if ( $pmp_review_activatenew == false ) {
 				$sql = 'SELECT id FROM pmp_reviews WHERE status = 0';
 				$res = dbexec($sql);
-				$smarty->assign('reviews', mysql_num_rows($res));
+				$smarty->assign('reviews', mysqli_num_rows($res));
 			}
 		}
 	}

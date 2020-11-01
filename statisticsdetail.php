@@ -119,7 +119,7 @@ $report[$i]['translate'][] = '';
 
 $result = dbexec($report[html2txt($_GET['id'])]['sql']);
 
-while ( $row = mysql_fetch_array($result, MYSQL_NUM) ) {
+while ( $row = mysqli_fetch_array($result, mysqli_NUM) ) {
 	if ( isset($report[html2txt($_GET['id'])]['replace']) ) {
 		$name = $row[0];
 		$birthyear = $row[3];

@@ -265,7 +265,7 @@ class Parser {
 		$inserts["pmp_film"] .= "\"".$this->epg."\",";
 		$inserts["pmp_film"] .= "\"".$mediabanner['FRONT']."\",";
 		$inserts["pmp_film"] .= "\"".$mediabanner['BACK']."\"),";
-		
+
 		if ( isset($inserts["pmp_film"]) && strlen($inserts["pmp_film"]) >= $max_packet ) {
 			$this->insertSomeData('pmp_film');
 		}
@@ -413,12 +413,12 @@ class Parser {
 			}
 		}
 
-		return mysql_real_escape_string(rtrim($notes,'n'));
+		return mysqli_real_escape_string($_SESSION['db'], rtrim($notes,'n'));
 	}
 
 	private function getLocation($id) {
 		$nr = (int)substr(strrchr($id, '.'), 1);
-		
+
 		switch($nr) {
 			case 0:  return 'United States'; break;
 			case 1:  return 'New Zealand'; break;
@@ -477,7 +477,7 @@ class Parser {
 
 	private function getPriority($priority) {
 		$priority = (int)$priority;
-		
+
 		switch($priority) {
 			case 0: return ''; break;
 			case 1: return 'Vague Interest'; break;
@@ -525,7 +525,7 @@ class Parser {
 			}
 
 			$i++;
-			
+
 			if ( isset($inserts["pmp_actors"]) && strlen($inserts["pmp_actors"]) >= $max_packet ) {
 				$this->insertSomeData('pmp_actors');
 			}
@@ -714,7 +714,7 @@ class Parser {
 	// Countries of Origin Table
 	private function buildOriginsDB() {
 		global $tag, $values, $inserts, $max_packet;
-	
+
 		if ( empty($inserts["pmp_countries_of_origin"]) ) {
 			$inserts["pmp_countries_of_origin"] = "INSERT INTO pmp_countries_of_origin (id, country) VALUES ";
 		}
@@ -730,7 +730,7 @@ class Parser {
 			$inserts["pmp_countries_of_origin"] .= "(\"".$values['COLLECTION']['DVD']['ID'][0]."\",";
 			$inserts["pmp_countries_of_origin"] .= "\"".getIsset($values['COLLECTION']['DVD']['COUNTRYOFORIGIN3'][0])."\"),";
 		}
-	
+
 		if ( isset($inserts["pmp_countries_of_origin"]) && strlen($inserts["pmp_countries_of_origin"]) >= $max_packet ) {
 			$this->insertSomeData('pmp_countries_of_origin');
 		}
@@ -766,7 +766,7 @@ class Parser {
 		$inserts["pmp_features"] .= "\"".$this->getBoolean($values['COLLECTION']['DVD']['FEATURES']['FEATUREBDLIVE'][0])."\",";
 		$inserts["pmp_features"] .= "\"".$this->getBoolean($values['COLLECTION']['DVD']['FEATURES']['FEATUREDIGITALCOPY'][0])."\",";
 		$inserts["pmp_features"] .= "\"".getIsset($values['COLLECTION']['DVD']['FEATURES']['OTHERFEATURES'][0])."\"),";
-		
+
 		if ( isset($inserts["pmp_features"]) && strlen($inserts["pmp_features"]) >= $max_packet ) {
 			$this->insertSomeData('pmp_features');
 		}
@@ -796,7 +796,7 @@ class Parser {
 		$inserts["pmp_format"] .= "\"".$this->getBoolean($values['COLLECTION']['DVD']['FORMAT']['DIMENSIONS']['DIM2D'][0])."\",";
 		$inserts["pmp_format"] .= "\"".$this->getBoolean($values['COLLECTION']['DVD']['FORMAT']['DIMENSIONS']['DIM3DANAGLYPH'][0])."\",";
 		$inserts["pmp_format"] .= "\"".$this->getBoolean($values['COLLECTION']['DVD']['FORMAT']['DIMENSIONS']['DIM3DBLURAY'][0])."\"),";
-		
+
 		if ( isset($inserts["pmp_format"]) && strlen($inserts["pmp_format"]) >= $max_packet ) {
 			$this->insertSomeData('pmp_format');
 		}
@@ -868,7 +868,7 @@ class Parser {
 
 		foreach ( $userlink as $key => $value ) {
 			if ( strtolower ( substr ( $value['URL'], 0, 7) ) ) {
-				// Insert MyLinks 
+				// Insert MyLinks
 				if ( empty($inserts["pmp_mylinks"]) ) {
 					$inserts["pmp_mylinks"] = "INSERT INTO pmp_mylinks (id, url, description, category, score) VALUES ";
 				}
@@ -1279,7 +1279,7 @@ class Parser {
 			}
 			$inserts["pmp_hash"] .= "(\"".$values['COLLECTION']['DVD']['ID'][0]."\",";
 			$inserts["pmp_hash"] .= "\"".$hash."\"),";
-		
+
 			if ( isset($inserts["pmp_hash"]) && strlen($inserts["pmp_hash"]) >= $max_packet ) {
 				$this->insertSomeData('pmp_hash');
 			}
@@ -1308,7 +1308,7 @@ class Parser {
 
 	private function cleanProfile() {
 		global $values, $profile_tables, $deletes;
-	
+
 		foreach ( $profile_tables as $table ) {
 			if ( empty($deletes[$table]) )
 				$deletes[$table] = "DELETE FROM ".$table." WHERE ";
@@ -1323,7 +1323,7 @@ class Parser {
 			$inserts["pmp_temptable"] = 'INSERT INTO pmp_temptable (`id`, `type`) VALUES ';
 		}
 		$inserts["pmp_temptable"] .= '("'.$values['COLLECTION']['DVD']['ID'][0].'","'.$types[$tmp].'"),';
-		
+
 		if ( isset($inserts["pmp_temptable"]) && strlen($inserts["pmp_temptable"]) >= $max_packet ) {
 			$this->insertSomeData('pmp_temptable');
 		}
@@ -1444,7 +1444,7 @@ class Parser {
 		global $hashs;
 
 		$res = dbexec("SELECT * FROM pmp_hash");
-		while ( $row=mysql_fetch_object($res) ) {
+		while ( $row=mysqli_fetch_object($res) ) {
 			$hashs[$row->id] = $row->hash;
 		}
 	}
@@ -1453,7 +1453,7 @@ class Parser {
 		global $collections;
 
 		$res = dbexec("SELECT * FROM pmp_collection");
-		while ( $row=mysql_fetch_object($res) ) {
+		while ( $row=mysqli_fetch_object($res) ) {
 			$collections[$row->collection] = $row->partofowned;
 		}
 	}
@@ -1462,11 +1462,11 @@ class Parser {
 		global $common_actors, $common_credits;
 
 		$res = dbexec("SELECT fullname, birthyear, actor_id FROM pmp_common_actors");
-		while ( $row=mysql_fetch_object($res) ) {
+		while ( $row=mysqli_fetch_object($res) ) {
 			$common_actors[stripslashes($row->fullname.$row->birthyear)] = $row->actor_id;
 		}
 		$res = dbexec("SELECT fullname, birthyear, credit_id FROM pmp_common_credits");
-		while ( $row=mysql_fetch_object($res) ) {
+		while ( $row=mysqli_fetch_object($res) ) {
 			$common_credits[stripslashes($row->fullname.$row->birthyear)] = $row->credit_id;
 		}
 	}
@@ -1475,8 +1475,8 @@ class Parser {
 		global $review_ids, $last_review_id;
 
 		$res = dbexec("SELECT id, ext_id, type FROM pmp_reviews_external");
-		$last_review_id = mysql_num_rows($res);
-		while ( $row=mysql_fetch_object($res) ) {
+		$last_review_id = mysqli_num_rows($res);
+		while ( $row=mysqli_fetch_object($res) ) {
 			if ( $row->type == 'imdb' ) {
 				$review_ids[$row->type . substr ( $row->ext_id, 0, 7 )] = $row->id;
 			} else {
@@ -1489,7 +1489,7 @@ class Parser {
 		global $users;
 
 		$res = dbexec("SELECT user_id, firstname, lastname, email, phone FROM pmp_users");
-		while ( $row=mysql_fetch_object($res) ) {
+		while ( $row=mysqli_fetch_object($res) ) {
 			$fullname = trim($row->firstname);
 			if ( !empty($row->lastname) ) {
 				if ( strlen($fullname) >0 ) $fullname .=  " ";
@@ -1523,7 +1523,7 @@ class Parser {
 			dbexec($sql);
 			unset($deletes[$table]);
 		}
-		
+
 		$sql = substr($inserts[$table], 0, strlen($inserts[$table])-1).';';
 		dbexec($sql);
 		unset($inserts[$table]);
@@ -1537,8 +1537,8 @@ class Parser {
 
 		$sql = 'SELECT MAX(actor_id) as id FROM pmp_common_actors';
 		$res = dbexec($sql);
-		if ( mysql_num_rows($res) > 0 ) {
-			$row = mysql_fetch_object($res);
+		if ( mysqli_num_rows($res) > 0 ) {
+			$row = mysqli_fetch_object($res);
 			$this->last_actor_id = $row->id;
 		}
 		else {
@@ -1554,8 +1554,8 @@ class Parser {
 
 		$sql = 'SELECT MAX(credit_id) as id FROM pmp_common_credits';
 		$res = dbexec($sql);
-		if ( mysql_num_rows($res) > 0 ) {
-			$row = mysql_fetch_object($res);
+		if ( mysqli_num_rows($res) > 0 ) {
+			$row = mysqli_fetch_object($res);
 			$this->last_credit_id = $row->id;
 		}
 		else {
@@ -1567,8 +1567,8 @@ class Parser {
 		// Is needed to find the dividers later in the filmprofile
 		$sql = 'SELECT MAX(user_id) AS id FROM pmp_users';
 		$res = dbexec($sql);
-		if ( mysql_num_rows($res) > 0 ) {
-			$row = mysql_fetch_object($res);
+		if ( mysqli_num_rows($res) > 0 ) {
+			$row = mysqli_fetch_object($res);
 			$this->last_user_id = $row->id;
 		}
 		else {
@@ -1634,14 +1634,14 @@ class Parser {
 		$deletes = array();
 
 		$res = dbexec("SHOW VARIABLES like 'max_allowed_packet'");
-		$row = mysql_fetch_object($res);
+		$row = mysqli_fetch_object($res);
 		$max_packet = $row->Value * .99;
 	}
 
 	// Lock tables before inserts, should give some minor speed-up
 	public function lockTables() {
 		global $tables;
-		
+
 		$sql = 'LOCK TABLES ';
 
 		foreach ( $tables as $table ) {

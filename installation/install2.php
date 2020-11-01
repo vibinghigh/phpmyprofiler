@@ -100,23 +100,23 @@ header('Content-type: text/html; charset=utf-8');
 				<table cellpadding="3" cellspacing="0" border="0" width="100%" class="maintests">
 <?php
 				    // Check Connection to Database
-				    if ( !@mysql_connect($pmp_sqlhost, $pmp_sqluser, $pmp_sqlpass) ) {
+				    if ( !$db = @mysqli_connect($pmp_sqlhost, $pmp_sqluser, $pmp_sqlpass) ) {
 					showmsg('Error', t('Unable to connect to database.'));
 					$failed = TRUE;
 				    }
 				    else {
 					showmsg('Success', t('Connection to database established.'));
 					// Check Database exist
-					if ( !mysql_select_db($pmp_sqldatabase) ) {
+					if ( !mysqli_select_db($db, $pmp_sqldatabase) ) {
 					    showmsg('Warning', t("Can't select database. Trying to create..."));
 
-					    if ( !mysql_query("CREATE DATABASE $pmp_sqldatabase DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci") ) {
+					    if ( !mysqli_query("CREATE DATABASE $pmp_sqldatabase DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci") ) {
 						showmsg('Error', t("Can't create database."));
 						$failed = TRUE;
 					    }
 					    else {
 						showmsg('Success', t('Database created.'));
-						mysql_select_db($pmp_sqldatabase);
+						mysqli_select_db($pmp_sqldatabase);
 					    }
 					}
 					else {

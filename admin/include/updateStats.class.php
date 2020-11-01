@@ -40,11 +40,11 @@ class updateStats {
 			$query = "SELECT SUM(countas) AS quantity FROM pmp_film";
 		}
 		if ( $pmp_exclude_tag != '' ) {
-			$query .= " WHERE pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysql_real_escape_string($pmp_exclude_tag) . "')";
+			$query .= " WHERE pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysqli_real_escape_string($_SESSION['db'], $pmp_exclude_tag) . "')";
 		}
 
 		$result = dbexec($query);
-		$sql .= "('all', '', '', '". mysql_result($result, 0, "quantity") . "'),";
+		$sql .= "('all', '', '', '". mysqli_result($result, 0, "quantity") . "'),";
 
 		// Collections
 		if ( isset( $pmp_collections) ) {
@@ -56,10 +56,10 @@ class updateStats {
 					$query = "SELECT SUM(countas) AS quantity FROM pmp_film WHERE collectiontype = '" . $collection . "'";
 				}
 				if ( $pmp_exclude_tag != '' ) {
-					$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysql_real_escape_string($pmp_exclude_tag) . "')";
+					$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysqli_real_escape_string($_SESSION['db'], $pmp_exclude_tag) . "')";
 				}
 				$result = dbexec($query);
-				$sql .= "('" . $collection . "', '', '', '". mysql_result($result, 0, "quantity") . "'),";
+				$sql .= "('" . $collection . "', '', '', '". mysqli_result($result, 0, "quantity") . "'),";
 			}
 		}
 
@@ -70,12 +70,12 @@ class updateStats {
 		else {
 			$query = "SELECT SUM(countas) AS quantity FROM pmp_film WHERE collectiontype != 'Ordered' AND collectiontype != 'Wish List' AND purchprice >= 0.01";
 		}
-		
+
 		if ( $pmp_exclude_tag != '' ) {
-			$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysql_real_escape_string($pmp_exclude_tag) . "')";
+			$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysqli_real_escape_string($_SESSION['db'], $pmp_exclude_tag) . "')";
 		}
 		$result = dbexec($query);
-		$sql .= "('price_count', '', '', '". mysql_result($result, 0, "quantity") . "'),";
+		$sql .= "('price_count', '', '', '". mysqli_result($result, 0, "quantity") . "'),";
 
 		// DVDs with Collection Number
 		if ( isset($pmp_use_countas) && $pmp_use_countas == "0") {
@@ -85,10 +85,10 @@ class updateStats {
 			$query = "SELECT SUM(countas) AS quantity FROM pmp_film WHERE collectiontype != 'Ordered' AND collectiontype != 'Wish List' AND collectionnumber != '0'";
 		}
 		if ( $pmp_exclude_tag != '' ) {
-			$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysql_real_escape_string($pmp_exclude_tag) . "')";
+			$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysqli_real_escape_string($_SESSION['db'], $pmp_exclude_tag) . "')";
 		}
 		$result = dbexec($query);
-		$sql .= "('number_count', '', '', '". mysql_result($result, 0, "quantity") . "'),";
+		$sql .= "('number_count', '', '', '". mysqli_result($result, 0, "quantity") . "'),";
 
 		// DVDs with Rating
 		if ( isset($pmp_use_countas) && $pmp_use_countas == "0") {
@@ -98,47 +98,47 @@ class updateStats {
 			$query = "SELECT SUM(countas) AS quantity FROM pmp_film WHERE collectiontype != 'Ordered' AND collectiontype != 'Wish List' AND rating != ''";
 		}
 		if ( $pmp_exclude_tag != '' ) {
-			$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysql_real_escape_string($pmp_exclude_tag) . "')";
+			$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysqli_real_escape_string($_SESSION['db'], $pmp_exclude_tag) . "')";
 		}
 		$result = dbexec($query);
-		$sql .= "('rating_count', '', '', '". mysql_result($result, 0, "quantity") . "'),";
+		$sql .= "('rating_count', '', '', '". mysqli_result($result, 0, "quantity") . "'),";
 
 		// DVDs without Childs
 		$query = "SELECT COUNT(pmp_film.id) AS quantity FROM pmp_film LEFT JOIN pmp_boxset ON pmp_film.id = pmp_boxset.childid WHERE collectiontype != 'Ordered' AND collectiontype != 'Wish List' AND pmp_boxset.childid IS NULL";
 		if ( $pmp_exclude_tag != '' ) {
-			$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysql_real_escape_string($pmp_exclude_tag) . "')";
+			$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysqli_real_escape_string($_SESSION['db'], $pmp_exclude_tag) . "')";
 		}
 		$result = dbexec($query);
-		$sql .= "('mainprofiles', '', '', '". mysql_result($result, 0, "quantity") . "'),";
+		$sql .= "('mainprofiles', '', '', '". mysqli_result($result, 0, "quantity") . "'),";
 
 		// Boxsets
 		$query = "SELECT COUNT(DISTINCT pmp_boxset.id) AS quantity FROM pmp_boxset, pmp_film WHERE pmp_boxset.id = pmp_film.id AND pmp_film.collectiontype != 'Ordered' AND collectiontype != 'Wish List'";
 		if ( $pmp_exclude_tag != '' ) {
-			$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysql_real_escape_string($pmp_exclude_tag) . "')";
+			$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysqli_real_escape_string($_SESSION['db'], $pmp_exclude_tag) . "')";
 		}
 		$result = dbexec($query);
-		$sql .= "('boxsets', '', '', '". mysql_result($result, 0, "quantity") . "'),";
+		$sql .= "('boxsets', '', '', '". mysqli_result($result, 0, "quantity") . "'),";
 
 		// Childs
 		$query = "SELECT COUNT(DISTINCT pmp_boxset.childid) AS quantity FROM pmp_boxset, pmp_film WHERE pmp_boxset.id = pmp_film.id AND pmp_film.collectiontype != 'Ordered' AND collectiontype != 'Wish List'";
 		if ( $pmp_exclude_tag != '' ) {
-			$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysql_real_escape_string($pmp_exclude_tag) . "')";
+			$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysqli_real_escape_string($_SESSION['db'], $pmp_exclude_tag) . "')";
 		}
 		$result = dbexec($query);
-		$sql .= "('childs', '', '', '". mysql_result($result, 0, "quantity") . "'),";
+		$sql .= "('childs', '', '', '". mysqli_result($result, 0, "quantity") . "'),";
 
 		// Price of all DVDs
 		$query = "SELECT purchcurrencyid, SUM(purchprice) AS sum FROM pmp_film WHERE collectiontype != 'Ordered' AND collectiontype != 'Wish List' AND purchprice >= 0.01";
 		if ( $pmp_exclude_tag != '' ) {
-			$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysql_real_escape_string($pmp_exclude_tag) . "')";
+			$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysqli_real_escape_string($_SESSION['db'], $pmp_exclude_tag) . "')";
 		}
 		$query .= " GROUP BY purchcurrencyid";
 		$result = dbexec($query);
 		$sum = 0;
-		$dvds_num = mysql_num_rows($result);
+		$dvds_num = mysqli_num_rows($result);
 		for ($i = 0; $i < $dvds_num; $i++) {
-			$sum += exchange(mysql_result($result, $i, "purchcurrencyid"), $pmp_usecurrency, mysql_result($result, $i, "sum"));
-			$usedcurrencies[] = mysql_result($result, $i, "purchcurrencyid");
+			$sum += exchange(mysqli_result($result, $i, "purchcurrencyid"), $pmp_usecurrency, mysqli_result($result, $i, "sum"));
+			$usedcurrencies[] = mysqli_result($result, $i, "purchcurrencyid");
 		}
 		$sql .= "('purchprice', '', '', '". $sum . "'),";
 
@@ -153,11 +153,11 @@ class updateStats {
 			foreach ($usedcurrencies as $curr) {
 				$query = "SELECT id, purchprice FROM pmp_film WHERE collectiontype != 'Ordered' AND collectiontype != 'Wish List' AND purchprice >= 0.01 AND purchcurrencyid ='$curr'";
 				if ( $pmp_exclude_tag != '' ) {
-					$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysql_real_escape_string($pmp_exclude_tag) . "')";
+					$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysqli_real_escape_string($_SESSION['db'], $pmp_exclude_tag) . "')";
 				}
 				$query .= " ORDER BY purchprice DESC LIMIT 3";
 				$result = dbexec($query);
-				while ( $row = mysql_fetch_object($result) ) {
+				while ( $row = mysqli_fetch_object($result) ) {
 					$tmp[$row->id] = exchange($curr, $pmp_usecurrency, $row->purchprice);
 				}
 			}
@@ -170,8 +170,8 @@ class updateStats {
 			for ($i = 0; $i < $count; $i++) {
 				$query = "SELECT id, title, purchprice FROM pmp_film WHERE id = '" . $tmp[$i] . "'";
 				$result = dbexec($query);
-				$row = mysql_fetch_object($result);
-				$sql .= "('highest_price', '" . mysql_real_escape_string($row->title) . "', '" . $row->id . "', '". $row->purchprice . "'),";
+				$row = mysqli_fetch_object($result);
+				$sql .= "('highest_price', '" . mysqli_real_escape_string($_SESSION['db'], $row->title) . "', '" . $row->id . "', '". $row->purchprice . "'),";
 			}
 		}
 
@@ -181,11 +181,11 @@ class updateStats {
 			foreach ( $usedcurrencies as $curr ) {
 				$query = "SELECT id, purchprice FROM pmp_film WHERE collectiontype != 'Ordered' AND collectiontype != 'Wish List' AND purchprice >= 0.01 AND purchcurrencyid ='$curr'";
 				if ( $pmp_exclude_tag != '' ) {
-					$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysql_real_escape_string($pmp_exclude_tag) . "')";
+					$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysqli_real_escape_string($_SESSION['db'], $pmp_exclude_tag) . "')";
 				}
 				$query .= " ORDER BY purchprice ASC LIMIT 3";
 				$result = dbexec($query);
-				while ( $row = mysql_fetch_object($result) ) {
+				while ( $row = mysqli_fetch_object($result) ) {
 					$tmp[$row->id] = exchange($curr, $pmp_usecurrency, $row->purchprice);
 				}
 			}
@@ -197,8 +197,8 @@ class updateStats {
 			for ($i = 0; $i < $count; $i++) {
 				$query = "SELECT id, title, purchprice FROM pmp_film WHERE id = '" . $tmp[$i]. "'";
 				$result = dbexec($query);
-				$row = mysql_fetch_object($result);
-				$sql .= "('lowest_price', '" . mysql_real_escape_string($row->title) . "', '" . $row->id . "', '". $row->purchprice . "'),";
+				$row = mysqli_fetch_object($result);
+				$sql .= "('lowest_price', '" . mysqli_real_escape_string($_SESSION['db'], $row->title) . "', '" . $row->id . "', '". $row->purchprice . "'),";
 			}
 		}
 
@@ -210,39 +210,39 @@ class updateStats {
 			$query = "SELECT SUM(countas) AS quantity FROM pmp_film WHERE collectiontype != 'Ordered' AND collectiontype != 'Wish List' AND runningtime > 0";
 		}
 		if ( $pmp_exclude_tag != '' ) {
-			$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysql_real_escape_string($pmp_exclude_tag) . "')";
+			$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysqli_real_escape_string($_SESSION['db'], $pmp_exclude_tag) . "')";
 		}
 		$result = dbexec($query);
-		$sql .= "('runtime_count', '', '', '". mysql_result($result, 0, "quantity") . "'),";
+		$sql .= "('runtime_count', '', '', '". mysqli_result($result, 0, "quantity") . "'),";
 
 		// Sum of Runningtime
 		$query = "SELECT SUM(runningtime) AS quantity FROM pmp_film WHERE collectiontype != 'Ordered' AND collectiontype != 'Wish List' AND runningtime > 0";
 		if ( $pmp_exclude_tag != '' ) {
-			$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysql_real_escape_string($pmp_exclude_tag) . "')";
+			$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysqli_real_escape_string($_SESSION['db'], $pmp_exclude_tag) . "')";
 		}
 		$result = dbexec($query);
-		$sql .= "('runtime_sum', '', '', '". mysql_result($result, 0, "quantity") . "'),";
+		$sql .= "('runtime_sum', '', '', '". mysqli_result($result, 0, "quantity") . "'),";
 
 		// Longest DVDs
 		$query = "SELECT id, title, runningtime FROM pmp_film WHERE collectiontype != 'Ordered' AND collectiontype != 'Wish List' AND runningtime > 1";
 		if ( $pmp_exclude_tag != '' ) {
-			$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysql_real_escape_string($pmp_exclude_tag) . "')";
+			$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysqli_real_escape_string($_SESSION['db'], $pmp_exclude_tag) . "')";
 		}
 		$query .= " ORDER BY runningtime DESC LIMIT 3";
 		$result = dbexec($query);
-		while ( $row = mysql_fetch_object($result) ) {
-			$sql .= "('longest', '" . mysql_real_escape_string($row->title) . "', '".$row->id  ."', '" . $row->runningtime . "'),";
+		while ( $row = mysqli_fetch_object($result) ) {
+			$sql .= "('longest', '" . mysqli_real_escape_string($_SESSION['db'], $row->title) . "', '".$row->id  ."', '" . $row->runningtime . "'),";
 		}
 
 		// Shortest DVDs
 		$query = "SELECT id, title, runningtime FROM pmp_film WHERE collectiontype != 'Ordered' AND collectiontype != 'Wish List' AND runningtime > 1";
 		if ( $pmp_exclude_tag != '' ) {
-			$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysql_real_escape_string($pmp_exclude_tag) . "')";
+			$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysqli_real_escape_string($_SESSION['db'], $pmp_exclude_tag) . "')";
 		}
 		$query .= " ORDER BY runningtime ASC LIMIT 3";
 		$result = dbexec($query);
-		while ( $row = mysql_fetch_object($result) ) {
-			$sql .= "('shortest', '" . mysql_real_escape_string($row->title) . "', '".$row->id  ."', '" . $row->runningtime . "'),";
+		while ( $row = mysqli_fetch_object($result) ) {
+			$sql .= "('shortest', '" . mysqli_real_escape_string($_SESSION['db'], $row->title) . "', '".$row->id  ."', '" . $row->runningtime . "'),";
 		}
 
 		// Ratings
@@ -253,11 +253,11 @@ class updateStats {
 			$query = "SELECT rating, SUM(countas) AS quantity FROM pmp_film WHERE collectiontype != 'Ordered' AND collectiontype != 'Wish List'";
 		}
 		if ( $pmp_exclude_tag != '' ) {
-			$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysql_real_escape_string($pmp_exclude_tag) . "')";
+			$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysqli_real_escape_string($_SESSION['db'], $pmp_exclude_tag) . "')";
 		}
 		$query .= " GROUP BY rating ORDER BY quantity DESC";
 		$result = dbexec($query);
-		while ( $row = mysql_fetch_object($result) ) {
+		while ( $row = mysqli_fetch_object($result) ) {
 			$sql .= "('ratings', '" . $row->rating . "', '', '" . $row->quantity . "'),";
 		}
 
@@ -269,26 +269,26 @@ class updateStats {
 			$query = "SELECT purchplace, SUM(countas) AS quantity FROM pmp_film WHERE collectiontype != 'Ordered' AND collectiontype != 'Wish List' AND purchplace != ''";
 		}
 		if ( $pmp_exclude_tag != '' ) {
-			$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysql_real_escape_string($pmp_exclude_tag) . "')";
+			$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysqli_real_escape_string($_SESSION['db'], $pmp_exclude_tag) . "')";
 		}
 		$query .= " GROUP BY purchplace ORDER BY quantity DESC LIMIT 10";
 		$result = dbexec($query);
-		while ( $row = mysql_fetch_object($result) ) {
+		while ( $row = mysqli_fetch_object($result) ) {
 			$sum = 0;
 			if ( count($usedcurrencies) > 0 ) {
 				foreach ( $usedcurrencies as $curr ) {
 					$query = "SELECT SUM(purchprice) AS sum FROM pmp_film WHERE collectiontype != 'Ordered' AND collectiontype != 'Wish List' AND purchprice >= 0.01 AND purchplace = '" . $row->purchplace . "' AND purchcurrencyid ='". $curr . "'";
 					if ( $pmp_exclude_tag != '' ) {
-						$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysql_real_escape_string($pmp_exclude_tag) . "')";
+						$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysqli_real_escape_string($_SESSION['db'], $pmp_exclude_tag) . "')";
 					}
 					$query .= " GROUP BY purchcurrencyid";
 					$res = dbexec($query);
-					while ( $row2 = mysql_fetch_object($res) ) {
+					while ( $row2 = mysqli_fetch_object($res) ) {
 						$sum += exchange($curr, $pmp_usecurrency, $row2->sum);
 					}
 				}
 			}
-			$sql .= "('purchplace_top10', '" . mysql_real_escape_string($row->purchplace) . "', '" . $sum . "', '" . $row->quantity . "'),";
+			$sql .= "('purchplace_top10', '" . mysqli_real_escape_string($_SESSION['db'], $row->purchplace) . "', '" . $sum . "', '" . $row->quantity . "'),";
 		}
 
 		// Year of Purchase
@@ -299,19 +299,19 @@ class updateStats {
 			$query = "SELECT YEAR(purchdate) AS date, SUM(countas) AS quantity FROM pmp_film WHERE collectiontype != 'Ordered' AND collectiontype != 'Wish List' AND purchdate != ''";
 		}
 		if ( $pmp_exclude_tag != '' ) {
-			$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysql_real_escape_string($pmp_exclude_tag) . "')";
+			$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysqli_real_escape_string($_SESSION['db'], $pmp_exclude_tag) . "')";
 		}
 		$query .= " GROUP BY date";
 		$result = dbexec($query);
-		while ( $row = mysql_fetch_object($result) ) {
+		while ( $row = mysqli_fetch_object($result) ) {
 			$query = "SELECT purchcurrencyid, SUM(purchprice) AS sum FROM pmp_film WHERE collectiontype != 'Ordered' AND collectiontype != 'Wish List' AND purchprice >= 0.01 AND YEAR(purchdate) = '" . $row->date . "' AND purchdate != ''";
 			if ( $pmp_exclude_tag != '' ) {
-				$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysql_real_escape_string($pmp_exclude_tag) . "')";
+				$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysqli_real_escape_string($_SESSION['db'], $pmp_exclude_tag) . "')";
 			}
 			$query .= " GROUP BY purchcurrencyid";
 			$res = dbexec($query);
 			$sum = 0;
-			while ( $row2 = mysql_fetch_object($res) ) {
+			while ( $row2 = mysqli_fetch_object($res) ) {
 				$sum +=  exchange($row2->purchcurrencyid, $pmp_usecurrency, $row2->sum);
 			}
 			$sql .= "('purchdate', '" . $row->date  . "', '" . $sum . "', '" . $row->quantity . "'),";
@@ -326,10 +326,10 @@ class updateStats {
 				$query  = "SELECT SUM(countas) AS quantity FROM pmp_film WHERE collectiontype != 'Ordered' AND collectiontype != 'Wish List' AND prodyear >= '" . $i . "' AND prodyear <= '" . ($i+9) . "'";
 			}
 			if ( $pmp_exclude_tag != '' ) {
-				$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysql_real_escape_string($pmp_exclude_tag) . "')";
+				$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysqli_real_escape_string($_SESSION['db'], $pmp_exclude_tag) . "')";
 			}
 			$result = dbexec($query);
-			$sql .= "('decade', '" . $i . "-" . ($i+9) . "', '', '" . mysql_result($result, 0, "quantity") . "'),";
+			$sql .= "('decade', '" . $i . "-" . ($i+9) . "', '', '" . mysqli_result($result, 0, "quantity") . "'),";
 		}
 
 		// Top 10 Genres
@@ -340,12 +340,12 @@ class updateStats {
 			$query = "SELECT genre, SUM(pmp_film.countas) AS quantity FROM pmp_genres LEFT JOIN pmp_film ON pmp_film.id = pmp_genres.id WHERE pmp_film.collectiontype != 'Ordered' AND collectiontype != 'Wish List'";
 		}
 		if ( $pmp_exclude_tag != '' ) {
-			$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysql_real_escape_string($pmp_exclude_tag) . "')";
+			$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysqli_real_escape_string($_SESSION['db'], $pmp_exclude_tag) . "')";
 		}
 		$query .= " GROUP BY genre ORDER BY quantity DESC LIMIT 10";
 		$result = dbexec($query);
-		while ( $row = mysql_fetch_object($result) ) {
-			$sql .= "('genres_top10', '" . mysql_real_escape_string($row->genre) . "', '', '" . $row->quantity . "'),";
+		while ( $row = mysqli_fetch_object($result) ) {
+			$sql .= "('genres_top10', '" . mysqli_real_escape_string($_SESSION['db'], $row->genre) . "', '', '" . $row->quantity . "'),";
 		}
 
 		// Top 10 Studios
@@ -356,12 +356,12 @@ class updateStats {
 			$query = "SELECT studio, SUM(pmp_film.countas) AS quantity FROM pmp_studios LEFT JOIN pmp_film ON pmp_film.id = pmp_studios.id WHERE pmp_film.collectiontype != 'Ordered' AND collectiontype != 'Wish List'";
 		}
 		if ( $pmp_exclude_tag != '' ) {
-			$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysql_real_escape_string($pmp_exclude_tag) . "')";
+			$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysqli_real_escape_string($_SESSION['db'], $pmp_exclude_tag) . "')";
 		}
 		$query .= " GROUP BY studio ORDER BY quantity DESC LIMIT 10";
 		$result = dbexec($query);
-		while ( $row = mysql_fetch_object($result) ) {
-			$sql .= "('studios_top10', '" . mysql_real_escape_string($row->studio) . "', '', '" . $row->quantity . "'),";
+		while ( $row = mysqli_fetch_object($result) ) {
+			$sql .= "('studios_top10', '" . mysqli_real_escape_string($_SESSION['db'], $row->studio) . "', '', '" . $row->quantity . "'),";
 		}
 
 		// Top 10 Media Companies
@@ -372,12 +372,12 @@ class updateStats {
 			$query = "SELECT company, SUM(pmp_film.countas) AS quantity FROM pmp_media_companies LEFT JOIN pmp_film ON pmp_film.id = pmp_media_companies.id WHERE pmp_film.collectiontype != 'Ordered' AND collectiontype != 'Wish List' AND company != ''";
 		}
 		if ( $pmp_exclude_tag != '' ) {
-			$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysql_real_escape_string($pmp_exclude_tag) . "')";
+			$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysqli_real_escape_string($_SESSION['db'], $pmp_exclude_tag) . "')";
 		}
 		$query .= " GROUP BY company ORDER BY quantity DESC LIMIT 10";
 		$result = dbexec($query);
-		while ( $row = mysql_fetch_object($result) ) {
-			$sql .= "('company_top10', '" . mysql_real_escape_string($row->company) . "', '', '" . $row->quantity . "'),";
+		while ( $row = mysqli_fetch_object($result) ) {
+			$sql .= "('company_top10', '" . mysqli_real_escape_string($_SESSION['db'], $row->company) . "', '', '" . $row->quantity . "'),";
 		}
 
 		// Regions
@@ -388,11 +388,11 @@ class updateStats {
 			$query = "SELECT region, SUM(pmp_film.countas) AS quantity FROM pmp_regions LEFT JOIN pmp_film ON pmp_film.id = pmp_regions.id WHERE pmp_film.collectiontype != 'Ordered' AND collectiontype != 'Wish List'";
 		}
 		if ( $pmp_exclude_tag != '' ) {
-			$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysql_real_escape_string($pmp_exclude_tag) . "')";
+			$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysqli_real_escape_string($_SESSION['db'], $pmp_exclude_tag) . "')";
 		}
 		$query .= " GROUP BY region";
 		$result = dbexec($query);
-		while ( $row = mysql_fetch_object($result) ) {
+		while ( $row = mysqli_fetch_object($result) ) {
 			$sql .= "('regions', '" . $row->region  . "', '', '" . $row->quantity . "'),";
 		}
 
@@ -404,12 +404,12 @@ class updateStats {
 			$query = "SELECT country, SUM(pmp_film.countas) AS quantity FROM pmp_countries_of_origin LEFT JOIN pmp_film ON pmp_film.id = pmp_countries_of_origin.id WHERE pmp_film.collectiontype != 'Ordered' AND collectiontype != 'Wish List' AND country != ''";
 		}
 		if ( $pmp_exclude_tag != '' ) {
-			$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysql_real_escape_string($pmp_exclude_tag) . "')";
+			$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysqli_real_escape_string($_SESSION['db'], $pmp_exclude_tag) . "')";
 		}
 		$query .= " GROUP BY country ORDER BY quantity DESC";
 		$result = dbexec($query);
-		while ( $row = mysql_fetch_object($result) ) {
-			$sql .= "('origins', '" . mysql_real_escape_string($row->country) . "', '', '" . $row->quantity . "'),";
+		while ( $row = mysqli_fetch_object($result) ) {
+			$sql .= "('origins', '" . mysqli_real_escape_string($_SESSION['db'], $row->country) . "', '', '" . $row->quantity . "'),";
 		}
 
 		// Localities
@@ -420,12 +420,12 @@ class updateStats {
 			$query = "SELECT locality, SUM(pmp_film.countas) AS quantity FROM pmp_film WHERE collectiontype != 'Ordered' AND collectiontype != 'Wish List' AND locality != ''";
 		}
 		if ( $pmp_exclude_tag != '' ) {
-			$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysql_real_escape_string($pmp_exclude_tag) . "')";
+			$query .= " AND pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysqli_real_escape_string($_SESSION['db'], $pmp_exclude_tag) . "')";
 		}
 		$query .= " GROUP BY locality ORDER BY quantity DESC";
 		$result = dbexec($query);
-		while ( $row = mysql_fetch_object($result) ) {
-			$sql .= "('localities', '" . mysql_real_escape_string($row->locality) . "', '', '" . $row->quantity . "'),";
+		while ( $row = mysqli_fetch_object($result) ) {
+			$sql .= "('localities', '" . mysqli_real_escape_string($_SESSION['db'], $row->locality) . "', '', '" . $row->quantity . "'),";
 		}
 
 		$sql[strlen($sql)-1] = ';';
@@ -433,12 +433,12 @@ class updateStats {
 
 		// Optimize and analyze tables
 		$result = dbexec('SHOW TABLES');
-		while ( $table = mysql_fetch_row($result) ) {
+		while ( $table = mysqli_fetch_row($result) ) {
 			dbexec('OPTIMIZE TABLE ' . $table[0]);
 		}
 
 		$result = dbexec('SHOW TABLES');
-		while ( $table = mysql_fetch_row($result) ) {
+		while ( $table = mysqli_fetch_row($result) ) {
 			dbexec('ANALYZE TABLE ' . $table[0]);
 		}
 	}

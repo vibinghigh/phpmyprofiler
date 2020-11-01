@@ -188,7 +188,7 @@ if ( (isset($_GET['action'])) && ($_GET['action'] == 'parse') ) {
 
 		if ( $pmp_parser_mode != 0 ) {
 			// Used when last parse failed
-			if ( mysql_num_rows(dbexec("SHOW TABLES LIKE 'pmp_temptable'") ) != 0) {
+			if ( mysqli_num_rows(dbexec("SHOW TABLES LIKE 'pmp_temptable'") ) != 0) {
 				dbexec("TRUNCATE TABLE pmp_temptable");
 			} else {
 				// Build a temporary table to identify deleted profiles
@@ -254,13 +254,13 @@ if ( (isset($_GET['action'])) && ($_GET['action'] == 'finish') ) {
 		$sql = "SELECT DISTINCT (id) FROM pmp_reviews_connect";
 	}
 	$result = dbexec($sql);
-	if ( mysql_num_rows($result) != 0 ) {
-		while ( $film = mysql_fetch_object($result) ) {
+	if ( mysqli_num_rows($result) != 0 ) {
+		while ( $film = mysqli_fetch_object($result) ) {
 			$review = 0;
 			$votes = 0;
 			$sql = "SELECT * FROM pmp_reviews_connect LEFT JOIN pmp_reviews_external ON review_id = pmp_reviews_external.id WHERE pmp_reviews_connect.id = '" . $film->id . "'";
 			$res = dbexec($sql);
-			while ( $row = mysql_fetch_object($res) ) {
+			while ( $row = mysqli_fetch_object($res) ) {
 				if ( $row->review != 0 && $row->votes != 0 ) {
 					if ( $row->type == 'rotten_u' ) {
 						$review = $review + ( ( 2 * $row->review ) * $row->votes );
@@ -282,14 +282,14 @@ if ( (isset($_GET['action'])) && ($_GET['action'] == 'finish') ) {
 		// What's changed while parsing?
 		$sql = "SELECT `type`, COUNT(*) AS count FROM pmp_temptable GROUP BY `type`";
 		$res = dbexec($sql);
-		if ( mysql_num_rows($res) != 0 ) {
-			while ( $row = mysql_fetch_object($res) ) {
+		if ( mysqli_num_rows($res) != 0 ) {
+			while ( $row = mysqli_fetch_object($res) ) {
 				$profiles[$row->type] = $row->count;
 			}
 			if ( $pmp_parser_mode == 1 ) {
 				$sql = "SELECT id FROM pmp_film WHERE id NOT IN (SELECT id FROM pmp_temptable)";
 				$res = dbexec($sql);
-				$profiles['deleted'] = mysql_num_rows(dbexec($sql));
+				$profiles['deleted'] = mysqli_num_rows(dbexec($sql));
 
 				// Delete missing profiles
 				if ($profiles['deleted'] != 0) {
@@ -324,11 +324,11 @@ if ( (isset($_GET['action'])) && ($_GET['action'] == 'finish') ) {
 	}
 
 	dbclose();
-	
+
 	// Flush smarty cache
 	// Don't use $smarty->clear_all_cache(), this will also delete all thumbnails
 	delCachedTempPHP();
-	
+
 	// Generate external review top and screenshot tags
 	genTopTags();
 	list ($ids, $link, $indb, $notindb, $symlink, $windows) = getScreenshotsAdm('../screenshots');

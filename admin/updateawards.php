@@ -81,7 +81,7 @@ function writeAward() {
 
 	// Delete existing awards
 	if ( empty($del) ) $del = "DELETE FROM pmp_awards WHERE ";
-	$del .= "(award='" . trim(mysql_real_escape_string(stripslashes($awards['AWARD']))) . "' AND awardyear='" . trim(mysql_real_escape_string($awards['YEAR'])) . "') OR ";
+	$del .= "(award='" . trim(mysqli_real_escape_string($_SESSION['db'], stripslashes($awards['AWARD']))) . "' AND awardyear='" . trim(mysqli_real_escape_string($_SESSION['db'], $awards['YEAR'])) . "') OR ";
 
 	// Go through all categories
 	for ($i = 1; $i <= count($awards['CATEGORY']); $i++) {
@@ -94,13 +94,13 @@ function writeAward() {
 				$win = 0;
 			}
 			if ( empty($insert) ) $insert = "INSERT INTO pmp_awards VALUES ";
-			$insert .= "('".trim(mysql_real_escape_string(stripslashes($awards['CATEGORY'][$i]['MOVIE'][$p]['TITLE']))) . "','"
+			$insert .= "('".trim(mysqli_real_escape_string($_SESSION['db'], stripslashes($awards['CATEGORY'][$i]['MOVIE'][$p]['TITLE']))) . "','"
 			. "','"
-			. trim(mysql_real_escape_string(stripslashes($awards['AWARD']))) . "','"
-			. trim(mysql_real_escape_string($awards['YEAR'])) . "','"
-			. trim(mysql_real_escape_string($awards['CATEGORY'][$i]['NAME'])) . "','"
+			. trim(mysqli_real_escape_string($_SESSION['db'], stripslashes($awards['AWARD']))) . "','"
+			. trim(mysqli_real_escape_string($_SESSION['db'], $awards['YEAR'])) . "','"
+			. trim(mysqli_real_escape_string($_SESSION['db'], $awards['CATEGORY'][$i]['NAME'])) . "','"
 			. $win . "','"
-			. trim(mysql_real_escape_string(getIsset($awards['CATEGORY'][$i]['MOVIE'][$p]['NOMINEE']))) . "'),";
+			. trim(mysqli_real_escape_string($_SESSION['db'], getIsset($awards['CATEGORY'][$i]['MOVIE'][$p]['NOMINEE']))) . "'),";
 		}
 	}
 	if ( isset($insert) && strlen($insert) >= $max_packet ) {
@@ -109,7 +109,7 @@ function writeAward() {
 		dbexec(substr($insert,0,-1).";");
 		$insert = '';
 	}
-	
+
 	$awards = '';
 	$category_i = 0;
 }
@@ -138,7 +138,7 @@ if ( (isset($_GET['action'])) && ($_GET['action'] == "deleteaward") ) {
 		dbconnect();
 
 		// Delete existing awards
-		$del = 'DELETE FROM pmp_awards WHERE award = \'' . mysql_real_escape_string($_GET['award']) . '\';';
+		$del = 'DELETE FROM pmp_awards WHERE award = \'' . mysqli_real_escape_string($_SESSION['db'], $_GET['award']) . '\';';
 		dbexec($del, true);
 	}
 }
@@ -196,12 +196,12 @@ if ( (isset($_GET['action'])) && ($_GET['action'] == "buildtags") ) {
 		dbexec($del, true);
 
 		// Get winner by orinal title
-		$sql = "SELECT DISTINCT id FROM pmp_film LEFT JOIN pmp_awards ON LOWER(pmp_film.originaltitle) = LOWER(pmp_awards.title) WHERE award = '" . mysql_real_escape_string($_GET['award']) . "' AND winner ='1' AND originaltitle != '' AND awardyear BETWEEN pmp_film.prodyear-1 AND pmp_film.prodyear+1;";
+		$sql = "SELECT DISTINCT id FROM pmp_film LEFT JOIN pmp_awards ON LOWER(pmp_film.originaltitle) = LOWER(pmp_awards.title) WHERE award = '" . mysqli_real_escape_string($_SESSION['db'], $_GET['award']) . "' AND winner ='1' AND originaltitle != '' AND awardyear BETWEEN pmp_film.prodyear-1 AND pmp_film.prodyear+1;";
 		$res = dbexec($sql);
-		$count = mysql_num_rows($res);
-		while ($row = mysql_fetch_object($res)) {
+		$count = mysqli_num_rows($res);
+		while ($row = mysqli_fetch_object($res)) {
 			if ( empty($insert) ) $insert = "INSERT INTO pmp_tags VALUES ";
-			$insert .= "('" . $row->id . "', '" . mysql_real_escape_string($_GET['award']) . "', '" . mysql_real_escape_string($_GET['award']) . "'),";
+			$insert .= "('" . $row->id . "', '" . mysqli_real_escape_string($_SESSION['db'], $_GET['award']) . "', '" . mysqli_real_escape_string($_SESSION['db'], $_GET['award']) . "'),";
 			if ( isset($insert) && $insert >= $max_packet ) {
 				dbexec(substr($insert,0,-1).";");
 				$insert = '';
@@ -213,12 +213,12 @@ if ( (isset($_GET['action'])) && ($_GET['action'] == "buildtags") ) {
 		}
 
 		// Get winner by title
-		$sql = "SELECT DISTINCT id FROM pmp_film LEFT JOIN pmp_awards ON LOWER(pmp_film.title) = LOWER(pmp_awards.title) WHERE award = '" . mysql_real_escape_string($_GET['award']) . "' AND winner ='1' AND originaltitle = '' AND awardyear BETWEEN pmp_film.prodyear-1 AND pmp_film.prodyear+1;";
+		$sql = "SELECT DISTINCT id FROM pmp_film LEFT JOIN pmp_awards ON LOWER(pmp_film.title) = LOWER(pmp_awards.title) WHERE award = '" . mysqli_real_escape_string($_SESSION['db'], $_GET['award']) . "' AND winner ='1' AND originaltitle = '' AND awardyear BETWEEN pmp_film.prodyear-1 AND pmp_film.prodyear+1;";
 		$res = dbexec($sql);
-		$count = $count + mysql_num_rows($res);
-		while ($row = mysql_fetch_object($res)) {
+		$count = $count + mysqli_num_rows($res);
+		while ($row = mysqli_fetch_object($res)) {
 			if ( empty($insert) ) $insert = "INSERT INTO pmp_tags VALUES ";
-			$insert .= "('" . $row->id . "', '" . mysql_real_escape_string($_GET['award']) . "', '" . mysql_real_escape_string($_GET['award']) . "'),";
+			$insert .= "('" . $row->id . "', '" . mysqli_real_escape_string($_SESSION['db'], $_GET['award']) . "', '" . mysqli_real_escape_string($_SESSION['db'], $_GET['award']) . "'),";
 			if ( isset($insert) && $insert >= $max_packet ) {
 				dbexec(substr($insert,0,-1).";");
 				$insert = '';
@@ -274,7 +274,7 @@ $types = NULL;
 dbconnect();
 $sql = 'SELECT DISTINCT award FROM pmp_awards ORDER BY award ASC';
 $res = dbexec($sql, false);
-while ( $row = mysql_fetch_object($res) ) {
+while ( $row = mysqli_fetch_object($res) ) {
 	$types[] = stripslashes($row->award);
 }
 $smarty->assign('Types', $types);

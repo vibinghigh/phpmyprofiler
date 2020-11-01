@@ -78,10 +78,10 @@ if ( $pmp_gdlib == true ) {
 		else {
 			// Get media and casetype from dvd
 			dbconnect();
-			$sql  = 'SELECT media_dvd, media_hddvd, media_bluray, media_custom, casetype, slipcover, banner_front, banner_back FROM pmp_film WHERE id = \'' . mysql_real_escape_string($_GET['id']) . '\'';
+			$sql  = 'SELECT media_dvd, media_hddvd, media_bluray, media_custom, casetype, slipcover, banner_front, banner_back FROM pmp_film WHERE id = \'' . mysqli_real_escape_string($_SESSION['db'], $_GET['id']) . '\'';
 			$res = dbexec($sql);
-			#if ( mysql_num_rows($res) == 1 ) {
-				$dvd = mysql_fetch_object($res);
+			#if ( mysqli_num_rows($res) == 1 ) {
+				$dvd = mysqli_fetch_object($res);
 			#}
 			dbclose();
 
@@ -103,7 +103,7 @@ if ( $pmp_gdlib == true ) {
 			if ( $pmp_hdbanner == true && ($_GET['type'] == 'front' &&  $dvd->banner_front != "Off")
 			    && ($dvd->media_hddvd == '1' || $dvd->media_bluray == '1')
 			    && ( ( $dvd->banner_front == "Automatic" && ($dvd->casetype == 'HD Keep Case' || $dvd->casetype == 'HD Slim') && $dvd->slipcover == '0') || $dvd->banner_front == "On" ) ) {
-				
+
 				if ($dvd->media_hddvd == '1') {
 					if ($dvd->media_dvd == '1') {
 						$banner = './themes/' . $pmp_theme . '/images/Banner_HDDVD_DVD.png';

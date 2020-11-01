@@ -49,7 +49,7 @@ if( (isset($_POST['action'])) && ($_POST['action'] == 'save') ) {
     else {
 	require('../config.inc.php');
 
-	if ( !@mysql_connect($pmp_sqlhost, $pmp_sqluser, $pmp_sqlpass) ) {
+	if ( !@mysqli_connect($pmp_sqlhost, $pmp_sqluser, $pmp_sqlpass) ) {
 	    $error = t('Wrong access data for MySQL Database.');
 	}
 	else {

@@ -32,8 +32,8 @@ dbconnect();
 $count_all = 0;
 $query = 'SELECT data FROM pmp_statistics WHERE type = \'all\'';
 $result = dbexec($query);
-if ( mysql_num_rows($result) > 0 ) {
-	$count_all = mysql_result($result, 0, 'data');
+if ( mysqli_num_rows($result) > 0 ) {
+	$count_all = mysqli_result($result, 0, 'data');
 }
 $smarty->assign('count_all', $count_all);
 
@@ -42,8 +42,8 @@ if ( $pmp_statistic_showprice == true ) {
 	$count_price = 0;
 	$query = 'SELECT data FROM pmp_statistics WHERE type = \'price_count\'';
 	$result = dbexec($query);
-	if ( mysql_num_rows($result) > 0 ) {
-		$count_price = mysql_result($result, 0, 'data');
+	if ( mysqli_num_rows($result) > 0 ) {
+		$count_price = mysqli_result($result, 0, 'data');
 	}
 	$smarty->assign('count_price', $count_price);
 
@@ -51,8 +51,8 @@ if ( $pmp_statistic_showprice == true ) {
 	$price_sum = 0;
 	$query = 'SELECT data FROM pmp_statistics WHERE type = \'purchprice\'';
 	$result = dbexec($query);
-	if ( mysql_num_rows($result) > 0 ) {
-		$price_sum = mysql_result($result, 0, 'data');
+	if ( mysqli_num_rows($result) > 0 ) {
+		$price_sum = mysqli_result($result, 0, 'data');
 	}
 	$smarty->assign('price_sum', number_format($price_sum, get_currency_digits($pmp_usecurrency), $pmp_dec_point, $pmp_thousands_sep));
 
@@ -60,8 +60,8 @@ if ( $pmp_statistic_showprice == true ) {
 	$average = 0;
 	$query = 'SELECT data FROM pmp_statistics WHERE type = \'average_price\'';
 	$result = dbexec($query);
-	if ( mysql_num_rows($result) > 0 ) {
-		$average = mysql_result($result, 0, 'data');
+	if ( mysqli_num_rows($result) > 0 ) {
+		$average = mysqli_result($result, 0, 'data');
 	}
 	$smarty->assign('average', number_format($average, get_currency_digits($pmp_usecurrency), $pmp_dec_point, $pmp_thousands_sep));
 
@@ -69,7 +69,7 @@ if ( $pmp_statistic_showprice == true ) {
 	$expensive = array();
 	$query = 'SELECT value FROM pmp_statistics WHERE type = \'highest_price\' ORDER BY LPAD(data, 20, \'0\') DESC';
 	$result = dbexec($query);
-	while ( $row = mysql_fetch_object($result) ) {
+	while ( $row = mysqli_fetch_object($result) ) {
 		$expensive[] = new smallDVD($row->value);
 	}
 	$smarty->assign('expensive', $expensive);
@@ -78,7 +78,7 @@ if ( $pmp_statistic_showprice == true ) {
 	$cheapest = array();
 	$query = 'SELECT value FROM pmp_statistics WHERE type = \'lowest_price\' ORDER BY LPAD(data, 20, \'0\') ASC';
 	$result = dbexec($query);
-	while ( $row = mysql_fetch_object($result) ) {
+	while ( $row = mysqli_fetch_object($result) ) {
 		$cheapest[] = new smallDVD($row->value);
 	}
 	$smarty->assign('cheapest', $cheapest);
@@ -88,8 +88,8 @@ if ( $pmp_statistic_showprice == true ) {
 $count_number = 0;
 $query = 'SELECT data FROM pmp_statistics WHERE type = \'number_count\'';
 $result = dbexec($query);
-if ( mysql_num_rows($result) > 0 ) {
-	$count_number =mysql_result($result, 0, 'data');
+if ( mysqli_num_rows($result) > 0 ) {
+	$count_number =mysqli_result($result, 0, 'data');
 }
 $smarty->assign('count_number', $count_number);
 
@@ -97,8 +97,8 @@ $smarty->assign('count_number', $count_number);
 $count_rating = 0;
 $query = 'SELECT data FROM pmp_statistics WHERE type = \'rating_count\'';
 $result = dbexec($query);
-if ( mysql_num_rows($result) > 0 ) {
-	$count_rating = mysql_result($result, 0, 'data');
+if ( mysqli_num_rows($result) > 0 ) {
+	$count_rating = mysqli_result($result, 0, 'data');
 }
 $smarty->assign('count_rating', $count_rating);
 
@@ -106,8 +106,8 @@ $smarty->assign('count_rating', $count_rating);
 $withoutchilds = 0;
 $query = 'SELECT data FROM pmp_statistics WHERE type = \'mainprofiles\'';
 $result = dbexec($query);
-if ( mysql_num_rows($result) > 0 ) {
-	$withoutchilds = mysql_result($result, 0, 'data');
+if ( mysqli_num_rows($result) > 0 ) {
+	$withoutchilds = mysqli_result($result, 0, 'data');
 }
 $smarty->assign('withoutchilds', $withoutchilds);
 
@@ -115,8 +115,8 @@ $smarty->assign('withoutchilds', $withoutchilds);
 $boxsets = 0;
 $query = 'SELECT data FROM pmp_statistics WHERE type = \'boxsets\'';
 $result = dbexec($query);
-if ( mysql_num_rows($result) > 0 ) {
-	$boxsets =  mysql_result($result, 0, 'data');
+if ( mysqli_num_rows($result) > 0 ) {
+	$boxsets =  mysqli_result($result, 0, 'data');
 }
 $smarty->assign('boxsets', $boxsets);
 
@@ -124,8 +124,8 @@ $smarty->assign('boxsets', $boxsets);
 $childs = 0;
 $query = 'SELECT data FROM pmp_statistics WHERE type = \'childs\'';
 $result = dbexec($query);
-if ( mysql_num_rows($result) > 0 ) {
-	$childs = mysql_result($result, 0, 'data');
+if ( mysqli_num_rows($result) > 0 ) {
+	$childs = mysqli_result($result, 0, 'data');
 }
 $smarty->assign('childs', $childs);
 
@@ -133,8 +133,8 @@ $smarty->assign('childs', $childs);
 $length_count = 0;
 $query = 'SELECT data FROM pmp_statistics WHERE type = \'runtime_count\'';
 $result = dbexec($query);
-if ( mysql_num_rows($result) > 0 ) {
-	$length_count =  mysql_result($result, 0, 'data');
+if ( mysqli_num_rows($result) > 0 ) {
+	$length_count =  mysqli_result($result, 0, 'data');
 }
 $smarty->assign('length_count', $length_count);
 
@@ -142,8 +142,8 @@ $smarty->assign('length_count', $length_count);
 $length_sum = 0;
 $query = 'SELECT data FROM pmp_statistics WHERE type = \'runtime_sum\'';
 $result = dbexec($query);
-if ( mysql_num_rows($result) > 0 ) {
-	$length_sum = mysql_result($result, 0, 'data');
+if ( mysqli_num_rows($result) > 0 ) {
+	$length_sum = mysqli_result($result, 0, 'data');
 }
 $smarty->assign('length_sum', $length_sum);
 $smarty->assign('length_sum_hours', $length_sum/60);
@@ -162,7 +162,7 @@ else {
 $long = array();
 $query = 'SELECT value FROM pmp_statistics WHERE type = \'longest\' ORDER BY LPAD(data, 20, \'0\') DESC';
 $result = dbexec($query);
-while ( $row = mysql_fetch_object($result) ) {
+while ( $row = mysqli_fetch_object($result) ) {
 	$long[] = new smallDVD($row->value);
 }
 $smarty->assign('longest', $long);
@@ -171,7 +171,7 @@ $smarty->assign('longest', $long);
 $short = array();
 $query = 'SELECT value FROM pmp_statistics WHERE type = \'shortest\' ORDER BY LPAD(data, 20, \'0\') ASC';
 $result = dbexec($query);
-while ( $row = mysql_fetch_object($result) ) {
+while ( $row = mysqli_fetch_object($result) ) {
 	$short[] = new smallDVD($row->value);
 }
 $smarty->assign('shortest', $short);
@@ -180,7 +180,7 @@ $smarty->assign('shortest', $short);
 $rating = array();
 $query = 'SELECT name, data FROM pmp_statistics WHERE type = \'ratings\' ORDER BY LPAD(data, 20, \'0\') DESC';
 $result = dbexec($query);
-while ( $row = mysql_fetch_object($result) ) {
+while ( $row = mysqli_fetch_object($result) ) {
 	$rating[] = array('name' => $row->name, 'data' => $row->data);
 }
 $smarty->assign('ratings', $rating);
@@ -189,7 +189,7 @@ $smarty->assign('ratings', $rating);
 $date = array();
 $query = 'SELECT name, value, data FROM pmp_statistics WHERE type = \'purchdate\' ORDER BY LPAD(data, 20, \'0\') DESC';
 $result = dbexec($query);
-while ( $row = mysql_fetch_object($result) ) {
+while ( $row = mysqli_fetch_object($result) ) {
 	$date[] = $row;
 }
 $smarty->assign('dates', $date);
@@ -198,7 +198,7 @@ $smarty->assign('dates', $date);
 $year = array();
 $query = 'SELECT name, data FROM pmp_statistics WHERE type = \'decade\' ORDER BY LPAD(data, 20, \'0\') DESC';
 $result = dbexec($query);
-while ( $row = mysql_fetch_object($result) ) {
+while ( $row = mysqli_fetch_object($result) ) {
 	$year[] = $row;
 }
 $smarty->assign('years', $year);
@@ -207,7 +207,7 @@ $smarty->assign('years', $year);
 $place = array();
 $query = 'SELECT name, value, data FROM pmp_statistics WHERE type = \'purchplace_top10\' ORDER BY LPAD(data, 20, \'0\') DESC';
 $result = dbexec($query);
-while ( $row = mysql_fetch_object($result) ) {
+while ( $row = mysqli_fetch_object($result) ) {
 	$place[] = $row;
 }
 $smarty->assign('places', $place);
@@ -216,7 +216,7 @@ $smarty->assign('places', $place);
 $genre = array();
 $query = 'SELECT name, data FROM pmp_statistics WHERE type = \'genres_top10\' ORDER BY LPAD(data, 20, \'0\') DESC';
 $result = dbexec($query);
-while ($row = mysql_fetch_object($result)) {
+while ($row = mysqli_fetch_object($result)) {
 	$genre[] = $row;
 }
 $smarty->assign('genres', $genre);
@@ -225,7 +225,7 @@ $smarty->assign('genres', $genre);
 $studio = array();
 $query = 'SELECT name, data FROM pmp_statistics WHERE type = \'studios_top10\' ORDER BY LPAD(data, 20, \'0\') DESC';
 $result = dbexec($query);
-while ($row = mysql_fetch_object($result)) {
+while ($row = mysqli_fetch_object($result)) {
 	$studio[] = $row;
 }
 $smarty->assign('studios', $studio);
@@ -234,7 +234,7 @@ $smarty->assign('studios', $studio);
 $companies = array();
 $query = 'SELECT name, data FROM pmp_statistics WHERE type = \'company_top10\' ORDER BY LPAD(data, 20, \'0\') DESC';
 $result = dbexec($query);
-while ($row = mysql_fetch_object($result)) {
+while ($row = mysqli_fetch_object($result)) {
 	$companies[] = $row;
 }
 $smarty->assign('companies', $companies);
@@ -243,7 +243,7 @@ $smarty->assign('companies', $companies);
 $region = array();
 $query = 'SELECT name, data FROM pmp_statistics WHERE type = \'regions\' ORDER BY LPAD(data, 20, \'0\') DESC';
 $result = dbexec($query);
-while ($row = mysql_fetch_object($result)) {
+while ($row = mysqli_fetch_object($result)) {
 	$region[] = $row;
 }
 $smarty->assign('regions', $region);
@@ -252,7 +252,7 @@ $smarty->assign('regions', $region);
 $origin = array();
 $query = 'SELECT name, data FROM pmp_statistics WHERE type = \'origins\' ORDER BY LPAD(data, 20, \'0\') DESC';
 $result = dbexec($query);
-while ($row = mysql_fetch_object($result)) {
+while ($row = mysqli_fetch_object($result)) {
 	$origin[] = $row;
 }
 $smarty->assign('origins', $origin);
@@ -261,7 +261,7 @@ $smarty->assign('origins', $origin);
 $locality = array();
 $query = 'SELECT name, data FROM pmp_statistics WHERE type = \'localities\' ORDER BY LPAD(data, 20, \'0\') DESC';
 $result = dbexec($query);
-while ($row = mysql_fetch_object($result)) {
+while ($row = mysqli_fetch_object($result)) {
 	$locality[] = $row;
 }
 $smarty->assign('localities', $locality);
@@ -270,16 +270,16 @@ $smarty->assign('localities', $locality);
 $visitors = 0;
 $query = 'SELECT MAX(id) AS num from pmp_counter';
 $result = dbexec($query);
-if ( mysql_num_rows($result) > 0 ) {
-	$visitors = mysql_result($result, 0, 'num');
+if ( mysqli_num_rows($result) > 0 ) {
+	$visitors = mysqli_result($result, 0, 'num');
 }
 $smarty->assign('visitors', $visitors);
 
 $profiles = 0;
 $query = 'SELECT MAX(id) AS num from pmp_counter_profil';
 $result = dbexec($query);
-if ( mysql_num_rows($result) > 0 ) {
-	$profiles = mysql_result($result, 0, 'num');
+if ( mysqli_num_rows($result) > 0 ) {
+	$profiles = mysqli_result($result, 0, 'num');
 }
 $smarty->assign('profiles', $profiles);
 

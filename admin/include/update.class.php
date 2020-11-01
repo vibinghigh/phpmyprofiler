@@ -54,7 +54,7 @@ class update {
 		}
 
 		if ( $res ) {
-			$sql = 'INSERT INTO pmp_update (id, date) VALUES (' . mysql_real_escape_string($this->id) . ', now())';
+			$sql = 'INSERT INTO pmp_update (id, date) VALUES (' . mysqli_real_escape_string($_SESSION['db'], $this->id) . ', now())';
 			$res = dbexec($sql, true);
 
 			if ( $res ) {
@@ -62,12 +62,12 @@ class update {
 				return $this->Description;
 			}
 			else {
-				$this->lasterror = mysql_error() . '<br /><br />Query:<br />' . replace_table_prefix($sql);
+				$this->lasterror = mysqli_error() . '<br /><br />Query:<br />' . replace_table_prefix($sql);
 				return false;
 			}
 		}
 		else {
-			$this->lasterror = mysql_error() . '<br /><br />Query:<br />' . $sql;
+			$this->lasterror = mysqli_error() . '<br /><br />Query:<br />' . $sql;
 			return false;
 		}
 	}

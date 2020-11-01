@@ -47,7 +47,7 @@ function updateRates() {
 		$rates = array_combine($tmp[1], $tmp[2]);
 
 		foreach ( $rates as $curr=>$rate ) {
-			dbexec('INSERT INTO pmp_rates (id, rate, date) VALUES (\'' . mysql_real_escape_string($curr) . '\', ' . mysql_real_escape_string($rate) . ', \'' . mysql_real_escape_string($date[1]) . '\')');
+			dbexec('INSERT INTO pmp_rates (id, rate, date) VALUES (\'' . mysqli_real_escape_string($_SESSION['db'], $curr) . '\', ' . mysqli_real_escape_string($_SESSION['db'], $rate) . ', \'' . mysqli_real_escape_string($_SESSION['db'], $date[1]) . '\')');
 		}
 
 		return true;
@@ -72,8 +72,8 @@ $res = dbexec('SELECT * FROM pmp_rates');
 
 $rates = array();
 
-if ( mysql_num_rows($res) > 0 ) {
-	while ( $row = mysql_fetch_object($res) ) {
+if ( mysqli_num_rows($res) > 0 ) {
+	while ( $row = mysqli_fetch_object($res) ) {
 		$rates[] = $row;
 	}
 }

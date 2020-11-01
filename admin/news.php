@@ -42,7 +42,7 @@ if ( isset($_GET['action']) ) {
 	switch ($_GET['action']) {
 		case 'delete':
 			if ( !empty($_GET['id']) ) {
-				$sql = 'DELETE FROM pmp_news WHERE id = ' . mysql_real_escape_string($_GET['id']);
+				$sql = 'DELETE FROM pmp_news WHERE id = ' . mysqli_real_escape_string($_SESSION['db'], $_GET['id']);
 				$res = dbexec($sql);
 				$smarty->assign('Success', t('News deleted.'));
 			}
@@ -68,8 +68,8 @@ if ( isset($_GET['action']) ) {
 				$smarty->assign('editadd', 'add');
 			}
 			else {
-				$sql = 'INSERT INTO pmp_news (date, title, text) VALUES (now(), \'' . mysql_real_escape_string($_POST['title']) . '\', \''
-				. mysql_real_escape_string($_POST['text']) . '\')';
+				$sql = 'INSERT INTO pmp_news (date, title, text) VALUES (now(), \'' . mysqli_real_escape_string($_SESSION['db'], $_POST['title']) . '\', \''
+				. mysqli_real_escape_string($_SESSION['db'], $_POST['text']) . '\')';
 				$res = dbexec($sql);
 				$smarty->assign('Success', t('News successfully added.'));
 			}
@@ -77,10 +77,10 @@ if ( isset($_GET['action']) ) {
 
 		case 'edit':
 			if ( !empty($_GET['id']) ) {
-				$sql = 'SELECT * FROM pmp_news WHERE id = ' . mysql_real_escape_string($_GET['id']);
+				$sql = 'SELECT * FROM pmp_news WHERE id = ' . mysqli_real_escape_string($_SESSION['db'], $_GET['id']);
 				$res = dbexec($sql);
 
-				while ( $row = mysql_fetch_object($res) ) {
+				while ( $row = mysqli_fetch_object($res) ) {
 					$edit[] = $row;
 				}
 
@@ -91,9 +91,9 @@ if ( isset($_GET['action']) ) {
 
 		case 'editsave':
 			if ( !empty($_GET['id']) ) {
-				$sql = 'UPDATE pmp_news SET title = \'' . mysql_real_escape_string($_POST['title']) . '\', text = \''
-				. mysql_real_escape_string($_POST['text']) . '\', date = now() WHERE id = '
-				. mysql_real_escape_string($_GET['id']);
+				$sql = 'UPDATE pmp_news SET title = \'' . mysqli_real_escape_string($_SESSION['db'], $_POST['title']) . '\', text = \''
+				. mysqli_real_escape_string($_SESSION['db'], $_POST['text']) . '\', date = now() WHERE id = '
+				. mysqli_real_escape_string($_SESSION['db'], $_GET['id']);
 				$res = dbexec($sql);
 				$smarty->assign('Success', t('News successfully edited.'));
 			}
@@ -106,8 +106,8 @@ $res = dbexec($sql);
 
 $news = array();
 
-if ( mysql_num_rows($res) > 0 ) {
-	while ( $row = mysql_fetch_object($res) ) {
+if ( mysqli_num_rows($res) > 0 ) {
+	while ( $row = mysqli_fetch_object($res) ) {
 		$row->text = nl2br($row->text);
 		$row->date = strftime($pmp_dateformat, strtotime($row->date));
 		$news[] = $row;

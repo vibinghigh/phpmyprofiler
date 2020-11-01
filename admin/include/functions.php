@@ -42,8 +42,8 @@ function checkDBState() {
 	$sql= 'SELECT id, DATE_FORMAT(date, \'' . $pmp_dateformat . ' %H:%i:%s\') as date FROM pmp_update ORDER BY id DESC LIMIT 1';
 	$res = dbexec($sql, true);
 
-	if ( mysql_num_rows($res) > 0 ) {
-		$row = mysql_fetch_object($res);
+	if ( mysqli_num_rows($res) > 0 ) {
+		$row = mysqli_fetch_object($res);
 		$StateDB = $row->id;
 		$StateDBTime = $row->date;
 	}
@@ -110,8 +110,8 @@ function getCurrencies() {
 	$rates['EUR'] = 'EUR';
 
 	if ( $res ) {
-		if ( mysql_num_rows($res) > 0 ) {
-			while ( $row = mysql_fetch_object($res) ) {
+		if ( mysqli_num_rows($res) > 0 ) {
+			while ( $row = mysqli_fetch_object($res) ) {
 				$rates[$row->id] = $row->id;
 			}
 		}
@@ -232,7 +232,7 @@ function saveLastIP() {
 	$sql = "UPDATE pmp_statistics SET type = 'last_login_old' WHERE type = 'last_login_new';";
 	dbexec($sql);
 	// Insert new IP
-	$sql = "INSERT INTO pmp_statistics VALUES ('last_login_new', '" . mysql_real_escape_string($_SERVER['REMOTE_ADDR']) . "', '" . date("H:i") . "', '". date("Y-m-d") . "');";
+	$sql = "INSERT INTO pmp_statistics VALUES ('last_login_new', '" . mysqli_real_escape_string($_SESSION['db'], $_SERVER['REMOTE_ADDR']) . "', '" . date("H:i") . "', '". date("Y-m-d") . "');";
 	dbexec($sql);
 	dbclose();
 }
@@ -242,7 +242,7 @@ function getTags() {
 	$sql= 'SELECT DISTINCT name FROM pmp_tags WHERE name != \'\' ORDER BY name';
 	$res = dbexec($sql, true);
 	if ( $res ) {
-		while ( $row = mysql_fetch_object($res) ) {
+		while ( $row = mysqli_fetch_object($res) ) {
 			$tags[$row->name] = $row->name;
 		}
 	}
@@ -295,11 +295,11 @@ function getIsset(& $value) {
 
 function maskData($value) {
 	if ( get_magic_quotes_gpc() == true ) {
-		$maskedData = mysql_real_escape_string(stripslashes($value));
+		$maskedData = mysqli_real_escape_string($_SESSION['db'], stripslashes($value));
 		return $maskedData;
 	}
 	else {
-		$maskedData = mysql_real_escape_string($value);
+		$maskedData = mysqli_real_escape_string($_SESSION['db'], $value);
 		return $maskedData;
 	}
 }
@@ -315,8 +315,8 @@ function genTopTags() {
 	$sql = "SELECT pmp_reviews_connect.id, pmp_reviews_external.type, top250, bottom100 FROM pmp_reviews_connect LEFT JOIN pmp_reviews_external ON review_id = pmp_reviews_external.id WHERE (top250 IS NOT NULL OR bottom100 IS NOT NULL) AND pmp_reviews_connect.id NOT IN (SELECT id FROM pmp_boxset)";
 
 	$result = dbexec($sql);
-	if ( mysql_num_rows($result) > 0 ) {
-		while ( $row = mysql_fetch_object($result) ) {
+	if ( mysqli_num_rows($result) > 0 ) {
+		while ( $row = mysqli_fetch_object($result) ) {
 			if ( isset($row->top250) ) {
 				$sql = "INSERT INTO pmp_tags values ('" . $row->id . "', '" . strtoupper($row->type) . " Top 250', '" . strtoupper($row->type) . " Top 250')";
 			} else {
@@ -342,7 +342,7 @@ function delCachedTempPHP() {
 
 function getMaxPacket() {
 	$res = dbexec("SHOW VARIABLES like 'max_allowed_packet'");
-	$row = mysql_fetch_object($res);
+	$row = mysqli_fetch_object($res);
 	return ($row->Value * .99);
 }
 
@@ -352,7 +352,7 @@ function genScreenshotTag($indb) {
 	dbexec("DELETE FROM pmp_tags WHERE name = 'Screenshots'");
 
 	foreach ($indb as $id) {
-		$sql = "INSERT INTO pmp_tags values ('" . mysql_real_escape_string($id['id']) . "', 'Screenshots', 'Screenshots')";
+		$sql = "INSERT INTO pmp_tags values ('" . mysqli_real_escape_string($_SESSION['db'], $id['id']) . "', 'Screenshots', 'Screenshots')";
 		dbexec($sql, true);
 	}
 
@@ -398,10 +398,10 @@ function getScreenshotsAdm($path) {
 	// IDs in database?
 	dbconnect();
 	foreach ($ids as $id) {
-		$sql = "SELECT id, title, sorttitle FROM pmp_film WHERE id='".mysql_real_escape_string($id)."'";
+		$sql = "SELECT id, title, sorttitle FROM pmp_film WHERE id='".mysqli_real_escape_string($_SESSION['db'], $id)."'";
 		$res = dbexec($sql);
-		if ( mysql_num_rows($res) != 0 ) {
-			$row = mysql_fetch_object($res);
+		if ( mysqli_num_rows($res) != 0 ) {
+			$row = mysqli_fetch_object($res);
 			$indb[$id] = array('sort'=>$row->sorttitle, 'id'=>$id, 'title'=>$row->title);
 		} else {
 			$notindb[$id] = $id;

@@ -111,13 +111,13 @@ if ( (isset($_GET['action'])) && ($_GET['action'] == 'send') ) {
 				// Add Review to DB
 				$query = sprintf('INSERT INTO pmp_reviews (film_id, date, title, name, email, text, vote, status)
 						VALUES ( \'%s\', now(), \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')',
-						mysql_real_escape_string( html2txt($_GET['id']) ),
-						mysql_real_escape_string( $title ),
-						mysql_real_escape_string( $name ),
-						mysql_real_escape_string( $email ),
-						mysql_real_escape_string( $text ),
-						mysql_real_escape_string( $vote ),
-						mysql_real_escape_string( $pmp_review_activatenew ) );
+						mysqli_real_escape_string($_SESSION['db'], html2txt($_GET['id']) ),
+						mysqli_real_escape_string($_SESSION['db'], $title ),
+						mysqli_real_escape_string($_SESSION['db'], $name ),
+						mysqli_real_escape_string($_SESSION['db'], $email ),
+						mysqli_real_escape_string($_SESSION['db'], $text ),
+						mysqli_real_escape_string($_SESSION['db'], $vote ),
+						mysqli_real_escape_string($_SESSION['db'], $pmp_review_activatenew ) );
 
 				if ( dbexec($query) ) {
 					$dvd = new smallDVD(html2txt($_GET['id']));

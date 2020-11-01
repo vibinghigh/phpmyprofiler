@@ -27,7 +27,7 @@ class option {
 	public $Value;
 	public $Optionlist;
 
-	public function option($Var, $Name, $Description, $Value, $Optionlist = '') {
+	public function __construct($Var, $Name, $Description, $Value, $Optionlist = '') {
 		$this->Var = $Var;
 		$this->Name = $Name;
 		$this->Description = $Description;

@@ -43,20 +43,20 @@ dbconnect();
 if ( !empty($_GET['id']) ) {
 	switch ($_GET['action']) {
 		case 'delete':
-			$sql = 'DELETE FROM pmp_guestbook WHERE id = ' . mysql_real_escape_string($_GET['id']);
+			$sql = 'DELETE FROM pmp_guestbook WHERE id = ' . mysqli_real_escape_string($_SESSION['db'], $_GET['id']);
 			$res = dbexec($sql);
 			$smarty->assign('Success', t('Guestbook entry deleted.'));
 			break;
 
 		case 'activate':
-			$sql = 'UPDATE pmp_guestbook SET status = 1 WHERE id = ' . mysql_real_escape_string($_GET['id']);
+			$sql = 'UPDATE pmp_guestbook SET status = 1 WHERE id = ' . mysqli_real_escape_string($_SESSION['db'], $_GET['id']);
 			$res = dbexec($sql);
 			$smarty->assign('Success', t('Guestbook entry activated.'));
 			break;
 
 		case 'comment':
-			$sql = 'UPDATE pmp_guestbook SET comment = \'' . mysql_real_escape_string($_POST['comment'])
-			. '\' WHERE id = ' . mysql_real_escape_string($_GET['id']);
+			$sql = 'UPDATE pmp_guestbook SET comment = \'' . mysqli_real_escape_string($_SESSION['db'], $_POST['comment'])
+			. '\' WHERE id = ' . mysqli_real_escape_string($_SESSION['db'], $_GET['id']);
 			$res = dbexec($sql);
 			$smarty->assign('Success', t('Comment changed.'));
 			break;
@@ -73,8 +73,8 @@ $res = dbexec($sql);
 
 $pending = array();
 
-if ( mysql_num_rows($res) > 0 ) {
-	while ( $row = mysql_fetch_object($res) ) {
+if ( mysqli_num_rows($res) > 0 ) {
+	while ( $row = mysqli_fetch_object($res) ) {
 		$row->date = strftime($pmp_dateformat, strtotime($row->date));
 		$row->text = replace_emoticons(nl2br(htmlspecialchars($row->text, ENT_COMPAT, 'UTF-8')));
 		$row->comment = htmlspecialchars($row->comment, ENT_COMPAT, 'UTF-8');
@@ -88,8 +88,8 @@ $res = dbexec($sql);
 
 $active = array();
 
-if ( mysql_num_rows($res) > 0 ) {
-	while ( $row = mysql_fetch_object($res) ) {
+if ( mysqli_num_rows($res) > 0 ) {
+	while ( $row = mysqli_fetch_object($res) ) {
 		$row->date = strftime($pmp_dateformat, strtotime($row->date));
 		$row->text = replace_emoticons(nl2br(htmlspecialchars($row->text, ENT_COMPAT, 'UTF-8')));
 		$row->comment = htmlspecialchars($row->comment, ENT_COMPAT, 'UTF-8');

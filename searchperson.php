@@ -34,13 +34,13 @@ $crew = array();
 if ( isset($_GET['name']) ) {
 	// Get birthyear if exists
 	if ( isset($_GET['birthyear']) ) {
-		$birthyear = mysql_real_escape_string(html2txt($_GET['birthyear']));
+		$birthyear = mysqli_real_escape_string($_SESSION['db'], html2txt($_GET['birthyear']));
 	}
 
 	$name = html2txt($_GET['name']);
 	$searchstr = str_replace("\\'", "'", html2txt($_GET['name']));
 	$searchstr = strtolower($searchstr);
-	$searchstr = trim(mysql_real_escape_string($searchstr));
+	$searchstr = trim(mysqli_real_escape_string($_SESSION['db'], $searchstr));
 
 	// Actor search (+Rolename)
 	$sql  = 'SELECT COUNT(pmp_actors.id) as episodes, pmp_actors.id, firstname, middlename, lastname, fullname, role, birthyear, creditedas ';
@@ -55,13 +55,13 @@ if ( isset($_GET['name']) ) {
 		$sql .= 'AND birthyear = \'' . $birthyear. '\' ';
 	}
 	$sql .= 'AND pmp_common_actors.actor_id = pmp_actors.actor_id ';
-	$sql .= 'AND pmp_actors.id NOT IN (SELECT id FROM pmp_tags where name = \'' . mysql_real_escape_string($pmp_exclude_tag) . '\') ';
+	$sql .= 'AND pmp_actors.id NOT IN (SELECT id FROM pmp_tags where name = \'' . mysqli_real_escape_string($_SESSION['db'], $pmp_exclude_tag) . '\') ';
 	$sql .= 'GROUP BY pmp_actors.id ';
 	$sql .= 'ORDER BY birthyear, lastname, firstname, sorttitle';
 
 	$result = dbexec($sql);
-	if ( mysql_num_rows($result) > 0 ) {
-		while ( $row = mysql_fetch_object($result) ) {
+	if ( mysqli_num_rows($result) > 0 ) {
+		while ( $row = mysqli_fetch_object($result) ) {
 			// Get headshot
 			$row->picname = getHeadshot($row->fullname, $row->birthyear, $row->firstname, $row->middlename, $row->lastname);
 			// If not found set blank
@@ -89,12 +89,12 @@ if ( isset($_GET['name']) ) {
 		$sql .= 'AND birthyear = \'' . $birthyear. '\' ';
 	}
 	$sql .= 'AND pmp_common_credits.credit_id = pmp_credits.credit_id ';
-	$sql .= 'AND pmp_credits.id NOT IN (SELECT id FROM pmp_tags where name = \'' . mysql_real_escape_string($pmp_exclude_tag) . '\') ';
+	$sql .= 'AND pmp_credits.id NOT IN (SELECT id FROM pmp_tags where name = \'' . mysqli_real_escape_string($_SESSION['db'], $pmp_exclude_tag) . '\') ';
 	$sql .= 'ORDER BY birthyear, lastname, firstname, sorttitle, type';
 
 	$result = dbexec($sql);
-	if ( mysql_num_rows($result) > 0 ) {
-		while ( $row = mysql_fetch_object($result) ) {
+	if ( mysqli_num_rows($result) > 0 ) {
+		while ( $row = mysqli_fetch_object($result) ) {
 			// Get headshot
 			$row->picname = getHeadshot($row->fullname, $row->birthyear, $row->firstname, $row->middlename, $row->lastname);
 			// If no found set blank

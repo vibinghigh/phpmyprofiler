@@ -113,18 +113,18 @@ function generateSql($count = false) {
 					$where[] = "pmp_film.media_bluray = '1'";
 				}
 				else if ( $val['value'] != '' ) {
-					$where[] = "pmp_film.media_custom = '" . mysql_real_escape_string($val['value']) . "'";
+					$where[] = "pmp_film.media_custom = '" . mysqli_real_escape_string($_SESSION['db'], $val['value']) . "'";
 				}
 			}
 			else if ( $val['field'] == 'title') {
-				$where[] = "MATCH (title, originaltitle, sorttitle) AGAINST ('" . mysql_real_escape_string($val['value']) . "')";
+				$where[] = "MATCH (title, originaltitle, sorttitle) AGAINST ('" . mysqli_real_escape_string($_SESSION['db'], $val['value']) . "')";
 			}
 			else if ( strpos($val['field'], '[dot]') ) {
 				$j++;
 				$tmp1 = explode('[dot]', $val['field']);
 				$tmp2 = explode('[dot]', $val['value']);
 				$join[] = 'INNER JOIN ' . $tmp1[0] . " t$j ON pmp_film.id = t$j." . $tmp1[1];
-				$where[] = "t$j." .$tmp2[0] ." = '" . mysql_real_escape_string($tmp2[1]) . "'";
+				$where[] = "t$j." .$tmp2[0] ." = '" . mysqli_real_escape_string($_SESSION['db'], $tmp2[1]) . "'";
 			}
 			else {
 				if ( strpos($val['field'], '[tab]') === false ) {
@@ -135,14 +135,14 @@ function generateSql($count = false) {
 				}
 
 				if ( (strpos($val['value'], '_') !== false) || (strpos($val['value'], '%') !== false) ) {
-					$where[] = $val['field'] . " like '" . mysql_real_escape_string($val['value']) . "'";
+					$where[] = $val['field'] . " like '" . mysqli_real_escape_string($_SESSION['db'], $val['value']) . "'";
 				}
 				else {
 					if ($val['value'] == 'Owned') {
 						$where[] = "pmp_collection.partofowned = '1'";
 					}
 					else {
-						$where[] = $val['field'] . " = '" . mysql_real_escape_string($val['value']) . "'";
+						$where[] = $val['field'] . " = '" . mysqli_real_escape_string($_SESSION['db'], $val['value']) . "'";
 					}
 				}
 			}
@@ -151,7 +151,7 @@ function generateSql($count = false) {
 
 	// Add exclude filter if exists
 	if ( $pmp_exclude_tag != '' ) {
-		$where[] = "pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysql_real_escape_string($pmp_exclude_tag) . "')";
+		$where[] = "pmp_film.id NOT IN (SELECT id FROM pmp_tags where name = '" . mysqli_real_escape_string($_SESSION['db'], $pmp_exclude_tag) . "')";
 	}
 
 	// If any search defined get all id's, childs and parents, no box-set handling
@@ -349,13 +349,13 @@ if ( !$smarty->isCached('menue.tpl', crc32($sql)) ) {
 		unset($_SESSION['list_orderby']);
 		setDefaultFilter();
 		$sql = generateSql();
-		$olderror = mysql_error();
+		$olderror = mysqli_error();
 		$res = dbexec($sql);
 		$smarty->assign('Error', t('An error occured during your query. To continue working all filters will be set to default values.'));
 	}
 
 	$dvds = array();
-	while ( $row = mysql_fetch_object($res) ) {
+	while ( $row = mysqli_fetch_object($res) ) {
 		$dvds[] = new smallDVD($row->id);
 	}
 
@@ -373,7 +373,7 @@ if ( !$smarty->isCached('menue.tpl', crc32($sql)) ) {
 
 	// Number of DVDs
 	$res = dbexec(generateSql(true));
-	$row = mysql_fetch_object($res);
+	$row = mysqli_fetch_object($res);
 	$dvdcount = $row->c;
 
 	$smarty->assign('sort', $sortcount);
@@ -385,7 +385,7 @@ if ( !$smarty->isCached('menue.tpl', crc32($sql)) ) {
 	// Locations
 	$res = dbexec('SELECT DISTINCT locality FROM pmp_film');
 	$loc = array();
-	while ( $row = mysql_fetch_object($res) ) {
+	while ( $row = mysqli_fetch_object($res) ) {
 		$loc[] = $row->locality;
 	}
 
@@ -394,7 +394,7 @@ if ( !$smarty->isCached('menue.tpl', crc32($sql)) ) {
 	// Origins
 	$res = dbexec('SELECT DISTINCT country FROM pmp_countries_of_origin where country != \'\'');
 	$origin = array();
-	while ( $row = mysql_fetch_object($res) ) {
+	while ( $row = mysqli_fetch_object($res) ) {
 		$origin[] = $row->country;
 	}
 

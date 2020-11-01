@@ -48,8 +48,8 @@ $res = dbexec($sql);
 
 $news = array();
 
-if ( mysql_num_rows($res) > 0 ) {
-	while ($row = mysql_fetch_object($res)) {
+if ( mysqli_num_rows($res) > 0 ) {
+	while ($row = mysqli_fetch_object($res)) {
 		$news[] = $row;
 	}
 }
@@ -57,7 +57,7 @@ if ( mysql_num_rows($res) > 0 ) {
 // Get otal number of news
 $query = 'SELECT COUNT(id) AS num FROM pmp_news';
 $result = dbexec($query);
-$count = mysql_result($result, 0, 'num');
+$count = mysqli_result($result, 0, 'num');
 
 dbclose();
 

@@ -18,17 +18,17 @@
 */
 
 class smallDVD {
-	function smallDVD($id) {
+	function __construct($id) {
 		global $pmp_dateformat, $pmp_usecurrency, $pmp_html_notes, $pmp_thousands_sep, $pmp_dec_point, $pmp_exclude_tag, $pmp_menue_childs;
 
 		if ( isset($id) ) {
-			$sql  = "SELECT * FROM pmp_film WHERE id = '" . mysql_real_escape_string($id) . "'";
+			$sql  = "SELECT * FROM pmp_film WHERE id = '" . mysqli_real_escape_string($_SESSION['db'], $id) . "'";
 			if ( !empty($pmp_exclude_tag) ) {
-				$sql .= " AND id NOT IN (SELECT id FROM pmp_tags where name = '" . mysql_real_escape_string($pmp_exclude_tag) . "')";
+				$sql .= " AND id NOT IN (SELECT id FROM pmp_tags where name = '" . mysqli_real_escape_string($_SESSION['db'], $pmp_exclude_tag) . "')";
 			}
 			$res = dbexec($sql);
-			if ( @mysql_num_rows($res) > 0 ) {
-				$row = mysql_fetch_array($res, MYSQL_ASSOC);
+			if ( @mysqli_num_rows($res) > 0 ) {
+				$row = mysqli_fetch_array($res, MYSQLI_ASSOC);
 
 				foreach ( $row as $key => $value ) {
 					$this->_db[$key] = $value;
@@ -36,7 +36,7 @@ class smallDVD {
 				}
 
 				$this->ProfileDate = strftime($pmp_dateformat, strtotime($this->_db['profiletimestamp']));
-		
+
 				if ($this->_db['media_bluray'] == 1) {
 					$this->Media = 'Blu-ray';
 				}
@@ -49,7 +49,7 @@ class smallDVD {
 				else if ($this->_db['media_custom'] != '') {
 					$this->Media = $this->_db['media_custom'];
 				}
-		
+
 				$this->UPC = $this->_db['upc'];
 				if ($this->_db['collectionnumber'] != 0) {
 					$this->Number = $this->_db['collectionnumber'];
@@ -95,7 +95,7 @@ class smallDVD {
 				if ( $this->_db['gift'] == 1 ) {
 					$this->Gift = true;
 					$sql = "SELECT * FROM pmp_users WHERE user_id = ".$this->_db['giftfrom'];
-					$result = mysql_fetch_object(dbexec($sql));
+					$result = mysqli_fetch_object(dbexec($sql));
 					$this->GiftFrom = new stdClass();
 					$this->GiftFrom->FirstName = $result->firstname;
 					$this->GiftFrom->LastName = $result->lastname;
@@ -137,7 +137,7 @@ class smallDVD {
 				if ( $this->_db['loaned'] == 1 ) {
 					$this->Loaned = true;
 					$sql = "SELECT * FROM pmp_users WHERE user_id = ".$this->_db['loanedto'];
-					$result = mysql_fetch_object(dbexec($sql));
+					$result = mysqli_fetch_object(dbexec($sql));
 					$this->LoanTo = new stdClass();
 					$this->LoanTo->FirstName = $result->firstname;
 					$this->LoanTo->LastName = $result->lastname;
@@ -159,11 +159,11 @@ class smallDVD {
 
 				// Is boxset?
 				$sql = "SELECT * FROM pmp_boxset LEFT JOIN pmp_film ON pmp_film.id = pmp_boxset.childid
-					WHERE pmp_boxset.id = '" . mysql_real_escape_string($this->id) . "' ORDER BY " . mysql_real_escape_string($pmp_menue_childs);
+					WHERE pmp_boxset.id = '" . mysqli_real_escape_string($_SESSION['db'], $this->id) . "' ORDER BY " . mysqli_real_escape_string($_SESSION['db'], $pmp_menue_childs);
 				$result = dbexec($sql);
-				if ( @mysql_num_rows($result) > 0 ) {
+				if ( @mysqli_num_rows($result) > 0 ) {
 					$this->Boxset_childs = array();
-					while ( $row = mysql_fetch_object($result) ) {
+					while ( $row = mysqli_fetch_object($result) ) {
 						if ( !empty($row->childid) ) {
 							$child = new smallDVD($row->childid);
 
@@ -182,10 +182,10 @@ class smallDVD {
 				}
 
 				// Or child?
-				$sql = 'SELECT id FROM pmp_boxset WHERE childid = \'' . mysql_real_escape_string($this->id) . '\'';
+				$sql = 'SELECT id FROM pmp_boxset WHERE childid = \'' . mysqli_real_escape_string($_SESSION['db'], $this->id) . '\'';
 				$result = dbexec($sql);
-				if ( @mysql_num_rows($result) > 0 ) {
-					$row = mysql_fetch_object($result);
+				if ( @mysqli_num_rows($result) > 0 ) {
+					$row = mysqli_fetch_object($result);
 					$this->partofBoxset = $row->id;
 				}
 				else {

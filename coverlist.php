@@ -43,23 +43,23 @@ else {
 
 // Get cover ids for one page
 $query = 'SELECT DISTINCT id FROM pmp_film WHERE collectiontype != \'Ordered\' AND collectiontype != \'Wish List\'
-	  AND id NOT IN (SELECT id FROM pmp_tags where name = \'' . mysql_real_escape_string($pmp_exclude_tag) . '\') ORDER BY sorttitle LIMIT '
+	  AND id NOT IN (SELECT id FROM pmp_tags where name = \'' . mysqli_real_escape_string($_SESSION['db'], $pmp_exclude_tag) . '\') ORDER BY sorttitle LIMIT '
 	 . (((int)$start - 1) * $pmp_cover_page) . ", " . $pmp_cover_page;
 $result = dbexec($query);
 
 $cover = array();
 
 // Get dvd objects with dvd covers
-if ( mysql_num_rows($result) > 0 ) {
-	while ( $row = mysql_fetch_object($result) ) {
+if ( mysqli_num_rows($result) > 0 ) {
+	while ( $row = mysqli_fetch_object($result) ) {
 		$cover[] = new smallDVD($row->id);
 	}
 }
 
 // Get total number of covers
-$query = 'SELECT COUNT(id) AS num FROM pmp_film WHERE collectiontype != \'Ordered\' AND collectiontype != \'Wish List\' AND id NOT IN (SELECT id FROM pmp_tags where name = \'' . mysql_real_escape_string($pmp_exclude_tag) . '\')';
+$query = 'SELECT COUNT(id) AS num FROM pmp_film WHERE collectiontype != \'Ordered\' AND collectiontype != \'Wish List\' AND id NOT IN (SELECT id FROM pmp_tags where name = \'' . mysqli_real_escape_string($_SESSION['db'], $pmp_exclude_tag) . '\')';
 $row = dbexec($query);
-$count = mysql_result($row, 0, 'num');
+$count = mysqli_result($row, 0, 'num');
 
 dbclose();
 

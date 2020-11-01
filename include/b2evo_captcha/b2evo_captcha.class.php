@@ -8,11 +8,11 @@
   *
   * Based on hn_captcha Version 1.2 by Horst Nogajski, horst@nogajski.de
   *     - hn_captcha is a fork of ocr_captcha by Julien Pachet
-  * 
+  *
   * License: GNU GPL (http://www.opensource.org/licenses/gpl-license.html)
   *
   * modified by Sebastian Hase (rincewind)
-  * 
+  *
   **/
 
 /**
@@ -49,9 +49,9 @@
 
 /**
   * License: GNU GPL (http://www.opensource.org/licenses/gpl-license.html)
-  * 
+  *
   * This program is free software;
-  * 
+  *
   * you can redistribute it and/or modify it under the terms of the GNU General Public License
   * as published by the Free Software Foundation; either version 2 of the License,
   * or (at your option) any later version.
@@ -252,7 +252,7 @@ class b2evo_captcha
 		  * Extracts the config array and overrides default settings.
 		  *
 		  **/
-		function b2evo_captcha($config,$secure=TRUE)
+		function __construct($config,$secure=TRUE)
 		{
 
 			// Test for GD-Library(-Version)
@@ -432,7 +432,7 @@ class b2evo_captcha
 		function make_captcha($private_key='')
 		{
 			if($private_key=='') $private_key = $this->generate_keypair();
-	
+
 			// set dimension of image
 			$this->lx = (strlen($private_key) + 1) * (int)(($this->maxsize + $this->minsize) / 1.5);
 			$this->ly = (int)(2.4 * $this->maxsize);
@@ -613,7 +613,7 @@ class b2evo_captcha
 				   phpinfo(8);
 				   $module_info = ob_get_contents();
 				   ob_end_clean();
-				   if(preg_match("/\bgd\s+version\b[^\d\n\r]+?([\d\.]+)/i", $module_info, $matches))
+				   if(preg_match("/\bgd\s+\w+\s+version\b[^\d\n\r]+?([\d\.]+)/i", $module_info, $matches))
 				   {
 					   $gd_version_number = $matches[1];
 				   }

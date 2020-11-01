@@ -41,12 +41,12 @@ dbconnect();
 // Delete picture
 if ( (isset($_GET['action'])) && ($_GET['action'] == 'delete') ) {
 	if ( !empty($_GET['id']) ) {
-		$sql = "SELECT filename FROM pmp_pictures WHERE id = '" . mysql_real_escape_string($_GET['id']) . "'";
+		$sql = "SELECT filename FROM pmp_pictures WHERE id = '" . mysqli_real_escape_string($_SESSION['db'], $_GET['id']) . "'";
 		$res = dbexec($sql);
-		$row = mysql_fetch_object($res);
+		$row = mysqli_fetch_object($res);
 		@unlink('../pictures/' . $row->filename);
 
-		$sql = "DELETE FROM pmp_pictures WHERE id = '" . mysql_real_escape_string($_GET['id']) . "'";
+		$sql = "DELETE FROM pmp_pictures WHERE id = '" . mysqli_real_escape_string($_SESSION['db'], $_GET['id']) . "'";
 		$res = dbexec($sql);
 
 		$smarty->assign('Success', t('The picture was successfully removed.'));
@@ -100,8 +100,8 @@ if ( (isset($_GET['action'])) && ($_GET['action'] == 'add') ) {
 					if ( !file_exists('../pictures/' . $name) ) {
 						if ( move_uploaded_file($_FILES['picture']['tmp_name'], '../pictures/' . $name) ) {
 							@chmod('../pictures/' . $name, 0644);
-							$sql = "INSERT INTO pmp_pictures (filename, title) VALUES ('" . mysql_real_escape_string($name)
-							. "', '" . mysql_real_escape_string($_POST['title']) . "')";
+							$sql = "INSERT INTO pmp_pictures (filename, title) VALUES ('" . mysqli_real_escape_string($_SESSION['db'], $name)
+							. "', '" . mysqli_real_escape_string($_SESSION['db'], $_POST['title']) . "')";
 							$res = dbexec($sql);
 
 							$smarty->assign('Success', t('Added a new picture.'));
@@ -134,7 +134,7 @@ $res = dbexec($sql);
 
 $pics = array();
 
-while ( $row = mysql_fetch_object($res) ) {
+while ( $row = mysqli_fetch_object($res) ) {
 	if ( file_exists('../pictures/' . $row->filename) ) {
 		$row->size = filesize('../pictures/' . $row->filename );
 		$img_info = getimagesize('../pictures/' . $row->filename );

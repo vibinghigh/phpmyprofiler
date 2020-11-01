@@ -22,7 +22,7 @@ class theme {
 	public $name;
 	public $wrongversion;
 
-	public function theme($name) {
+	public function __construct($name) {
 		$this->id = $name;
 		$this->_load();
 	}

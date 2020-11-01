@@ -55,7 +55,7 @@ else {
 	$query = substr($query,0,-4).") AND data > 0 ORDER BY collectiontype";
 	$result = dbexec($query);
 
-	if ( mysql_num_rows($result) == 0 ) {
+	if ( mysqli_num_rows($result) == 0 ) {
 		header('Content-Type: image/gif');
 		header("Cache-Control: must-revalidate");
 		header($ExpStr);
@@ -64,7 +64,7 @@ else {
 	}
 	else {
 		$types = 0;
-		while ( $row = mysql_fetch_object($result) ) {
+		while ( $row = mysqli_fetch_object($result) ) {
 			$List[] = $row->count;
 			$Legend[] = entity_to_decimal_value(t($row->collectiontype));
 			$types++;

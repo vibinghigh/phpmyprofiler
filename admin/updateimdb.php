@@ -62,7 +62,7 @@ if (isset($_GET['action']) && ($_GET['action'] == 'update') && !isset($_GET['sta
 
 	dbconnect();
 	$result = dbexec($sql);
-	$maxids = mysql_num_rows($result);
+	$maxids = mysqli_num_rows($result);
 	dbclose();
 
 	if ( $maxids == 0 ) {
@@ -117,7 +117,7 @@ if (isset($_GET['action']) && ($_GET['action'] == 'update') && isset($_GET['star
 
 	$replace = "REPLACE INTO pmp_reviews_external (id,type,ext_id,review,votes,top250,bottom100,lastupdate) VALUES ";
 
-	while ( $row = mysql_fetch_object($result) ) {
+	while ( $row = mysqli_fetch_object($result) ) {
 		if ( $db == 'imdb' ) {
 			$id = $row->ext_id;
 			$site = getIMDBSite($id);
@@ -151,14 +151,14 @@ if (isset($_GET['action']) && ($_GET['action'] == 'update') && isset($_GET['star
 	if ($lastround) {
 		$sql = "SELECT DISTINCT (id) FROM pmp_reviews_connect";
 		$result = dbexec($sql);
-		if (mysql_num_rows($result) != 0) {
+		if (mysqli_num_rows($result) != 0) {
 			$replace = "REPLACE INTO pmp_film (id,review) VALUES ";
-			while ( $film = mysql_fetch_object($result) ) {
+			while ( $film = mysqli_fetch_object($result) ) {
 				$review = 0;
 				$votes = 0;
 				$sql = "SELECT * FROM pmp_reviews_connect LEFT JOIN pmp_reviews_external ON review_id = pmp_reviews_external.id WHERE pmp_reviews_connect.id = '" . $film->id . "'";
 				$res = dbexec($sql);
-				while ( $row = mysql_fetch_object($res) ) {
+				while ( $row = mysqli_fetch_object($res) ) {
 					if ( $row->review != 0 && $row->votes != 0 ) {
 						if ( $row->type == 'rotten_u' ) {
 							$review = $review + ( ( 2 * $row->review ) * $row->votes );
@@ -202,27 +202,27 @@ dbconnect();
 
 // IMDB
 $sql = "SELECT id FROM pmp_reviews_external WHERE type = 'imdb'";
-$smarty->assign('imdb_all', mysql_num_rows(dbexec($sql)));
+$smarty->assign('imdb_all', mysqli_num_rows(dbexec($sql)));
 $sql = "SELECT id FROM pmp_reviews_external WHERE type = 'imdb' AND (to_days(lastupdate) < (to_days(now())-28) OR lastupdate = '0000-00-00')";
-$smarty->assign('imdb_old', mysql_num_rows(dbexec($sql)));
+$smarty->assign('imdb_old', mysqli_num_rows(dbexec($sql)));
 $sql = "SELECT id FROM pmp_reviews_external WHERE type = 'imdb' AND lastupdate = '0000-00-00'";
-$smarty->assign('imdb_new', mysql_num_rows(dbexec($sql)));
+$smarty->assign('imdb_new', mysqli_num_rows(dbexec($sql)));
 
 // OFDB
 $sql = "SELECT id FROM pmp_reviews_external WHERE type = 'ofdb'";
-$smarty->assign('ofdb_all', mysql_num_rows(dbexec($sql)));
+$smarty->assign('ofdb_all', mysqli_num_rows(dbexec($sql)));
 $sql = "SELECT id FROM pmp_reviews_external WHERE type = 'ofdb' AND (to_days(lastupdate) < (to_days(now())-28) OR lastupdate = '0000-00-00')";
-$smarty->assign('ofdb_old', mysql_num_rows(dbexec($sql)));
+$smarty->assign('ofdb_old', mysqli_num_rows(dbexec($sql)));
 $sql = "SELECT id FROM pmp_reviews_external WHERE type = 'ofdb' AND lastupdate = '0000-00-00'";
-$smarty->assign('ofdb_new', mysql_num_rows(dbexec($sql)));
+$smarty->assign('ofdb_new', mysqli_num_rows(dbexec($sql)));
 
 // RottenTomatoes
 $sql = "SELECT id FROM pmp_reviews_external WHERE type = 'rotten_c'";
-$smarty->assign('rotten_all', mysql_num_rows(dbexec($sql)));
+$smarty->assign('rotten_all', mysqli_num_rows(dbexec($sql)));
 $sql = "SELECT id FROM pmp_reviews_external WHERE type = 'rotten_c' AND (to_days(lastupdate) < (to_days(now())-28) OR lastupdate = '0000-00-00')";
-$smarty->assign('rotten_old', mysql_num_rows(dbexec($sql)));
+$smarty->assign('rotten_old', mysqli_num_rows(dbexec($sql)));
 $sql = "SELECT id FROM pmp_reviews_external WHERE type = 'rotten_c' AND lastupdate = '0000-00-00'";
-$smarty->assign('rotten_new', mysql_num_rows(dbexec($sql)));
+$smarty->assign('rotten_new', mysqli_num_rows(dbexec($sql)));
 
 dbclose();
 

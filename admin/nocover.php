@@ -43,7 +43,7 @@ dbconnect();
 $sql = 'SELECT id FROM pmp_film ORDER BY sorttitle';
 $res = dbexec($sql);
 
-while ( $row = mysql_fetch_object($res) ) {
+while ( $row = mysqli_fetch_object($res) ) {
 	$dvds[] = new smallDVD($row->id);
 }
 

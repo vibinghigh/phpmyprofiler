@@ -49,7 +49,7 @@ else {
 
     $query = 'SELECT name AS year, data AS count FROM pmp_statistics WHERE type = \'purchdate\' GROUP BY year';
     $result = dbexec($query);
-	$rows = mysql_num_rows($result);
+	$rows = mysqli_num_rows($result);
 
     if ( $rows == 0 ) {
 	header('Content-Type: image/gif');
@@ -59,7 +59,7 @@ else {
 	@readfile('../themes/default/images/empty.gif');
     }
     else {
-	while ( $row = mysql_fetch_object($result) ) {
+	while ( $row = mysqli_fetch_object($result) ) {
 	    $Purchdate[] = $row->count;
 	    $Legend[] = $row->year;
 	}

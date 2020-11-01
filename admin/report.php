@@ -230,7 +230,7 @@ if ( (!empty($header)) && (is_array($header)) ) {
 		$columnoutput = 'AltOutput';
 	}
 
-	while ( $row = mysql_fetch_object($res) ) {
+	while ( $row = mysqli_fetch_object($res) ) {
 		$dvd = new smallDVD($row->id);
 		if ( !empty($_POST['col1']) ) $tmpdata[0] = $dvd->get(getColumns($_POST['col1'], $columnoutput));
 		if ( !empty($_POST['col2']) ) $tmpdata[1] = $dvd->get(getColumns($_POST['col2'], $columnoutput));

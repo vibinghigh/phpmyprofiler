@@ -48,7 +48,7 @@ else {
     $query = 'SELECT name AS studio, data AS count FROM pmp_statistics WHERE type = \'studios_top10\' ORDER BY LPAD(data, 20, \'0\') DESC';
     $result = dbexec($query);
 
-    if ( mysql_num_rows($result) == 0 ) {
+    if ( mysqli_num_rows($result) == 0 ) {
 	header('Content-Type: image/gif');
 	header("Cache-Control: must-revalidate");
 	header($ExpStr);
@@ -56,7 +56,7 @@ else {
 	@readfile('../themes/default/images/empty.gif');
     }
     else {
-	while ( $row = mysql_fetch_object($result) ) {
+	while ( $row = mysqli_fetch_object($result) ) {
 	    $Studios[] = $row->count;
 	    $Legend[] = trunc($row->studio, 30);
 	}

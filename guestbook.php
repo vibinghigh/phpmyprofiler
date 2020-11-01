@@ -102,11 +102,11 @@ if ( (isset($_GET['action'])) && ($_GET['action'] == 'save') ) {
 				// Insert enty into db
 				$query = sprintf('INSERT INTO pmp_guestbook (date, name, email, text, status, url)
 					VALUES ( now(), \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')',
-					mysql_real_escape_string( $name ),
-					mysql_real_escape_string( $email ),
-					mysql_real_escape_string( $message ),
-					mysql_real_escape_string( $pmp_guestbook_activatenew ),
-					mysql_real_escape_string( $url ) );
+					mysqli_real_escape_string($_SESSION['db'], $name ),
+					mysqli_real_escape_string($_SESSION['db'], $email ),
+					mysqli_real_escape_string($_SESSION['db'], $message ),
+					mysqli_real_escape_string($_SESSION['db'], $pmp_guestbook_activatenew ),
+					mysqli_real_escape_string($_SESSION['db'], $url ) );
 
 				if ( dbexec($query) ) {
 					// Send info mail to admin
@@ -165,7 +165,7 @@ else {
 // Get total numbers of guestbook entries
 $query = 'SELECT COUNT(id) AS num from pmp_guestbook WHERE status = 1';
 $row = dbexec($query);
-$count = mysql_result($row, 0, 'num');
+$count = mysqli_result($row, 0, 'num');
 
 // Get guestbook entries for one page
 $query = 'SELECT name, email, date_format(date, \'' . $pmp_dateformat . '\') AS date, text, url, comment
@@ -175,8 +175,8 @@ $result = dbexec($query);
 
 $i = 0;
 $entries = array();
-if ( mysql_num_rows($result) > 0 ) {
-	while ( $row = mysql_fetch_object($result) ) {
+if ( mysqli_num_rows($result) > 0 ) {
+	while ( $row = mysqli_fetch_object($result) ) {
 		$row->nr = $count - $i++ - (((int)$start - 1) * $pmp_entries_side);
 		$row->text = replace_emoticons($row->text);
 		$row->comment = replace_emoticons($row->comment);

@@ -32,7 +32,7 @@ function thumb($id) {
 	$dst_Filename = '../cache/w50_' . $id.'f.png';
 
 	// If no cover found show placeholder
-	if ( !is_file($src_Filename) ) { 
+	if ( !is_file($src_Filename) ) {
 		$src_Filename = '../themes/' . $pmp_theme . '/images/nocover.jpg';
 	}
 	$src_img = imagecreatefromjpeg($src_Filename);
@@ -49,11 +49,11 @@ function thumb($id) {
 
 	// Creating thumb
 	$dst_img = ImageCreateTrueColor($new_x, $new_y);
-	imagecopyresampled($dst_img, $src_img, 0, 0, 0, 0, $new_x, $new_y, $old_x, $old_y); 
+	imagecopyresampled($dst_img, $src_img, 0, 0, 0, 0, $new_x, $new_y, $old_x, $old_y);
 	imagepng($dst_img, $dst_Filename);
 
 	// Collecting some garbage
-	imagedestroy($dst_img); 
+	imagedestroy($dst_img);
 	imagedestroy($src_img);
 
 	return $dst_Filename;
@@ -78,7 +78,7 @@ function calculateTextBox($text,$fontFile,$fontSize,$fontAngle) {
 	 "height" => $maxY - $minY,
 	 "box"    => $rect
 	);
-} 
+}
 
 function buildBanners() {
 	global $pmp_build_banners, $pmp_banner_name;
@@ -101,8 +101,8 @@ function buildBanners() {
 		if ( isset($pmp_banner_name) && $pmp_banner_name != '') {
 			$sql = "SELECT user_id FROM pmp_users WHERE CONCAT(firstname,' ',lastname) = '" . $pmp_banner_name . "'";
 			$res = dbexec($sql);
-			if ( mysql_num_rows($res) > 0 ) {
-				$row = mysql_fetch_object($res);
+			if ( mysqli_num_rows($res) > 0 ) {
+				$row = mysqli_fetch_object($res);
 				$sql = "SELECT id FROM pmp_events WHERE EventType = 'Watched' AND user_id = " . $row->user_id . " ORDER BY Timestamp DESC LIMIT 0,10";
 			} else {
 				$sql = "SELECT id FROM pmp_events WHERE EventType = 'Watched' ORDER BY Timestamp DESC LIMIT 0,10";
@@ -127,13 +127,13 @@ function buildBanner($sql, $title, $prefix) {
 
 	// Getting info from database
 	$result = dbexec($sql);
-	$rows = mysql_num_rows($result);
+	$rows = mysqli_num_rows($result);
 
 	// Creating thumbs
 	if ( $rows == 0 ) {
 		return false;
 	} else {
-		while ($row = mysql_fetch_object($result)) {
+		while ($row = mysqli_fetch_object($result)) {
 			$file = thumb($row->id);
 			$thumb[] = imagecreatefrompng($file);
 			unlink($file);
@@ -142,7 +142,7 @@ function buildBanner($sql, $title, $prefix) {
 
 	// Creating background
 	$size_img = GetImageSize($backimage);
-	$img_width = $size_img[0]; 
+	$img_width = $size_img[0];
 	$img_height = $size_img[1];
 	$dst_img = imagecreatefrompng($backimage);
 	imagealphablending($dst_img, true); // setting alpha blending on
@@ -160,10 +160,10 @@ function buildBanner($sql, $title, $prefix) {
 	// Creating text
 	$title = html_entity_decode($title, ENT_COMPAT, 'UTF-8');
 	$color = imagecolorallocate($dst_img, 255, 255, 255);
-	$the_box = calculateTextBox($title, $font, 11, 0); 
+	$the_box = calculateTextBox($title, $font, 11, 0);
 	imagettftext($dst_img, 11, 0,
 		$the_box["left"] + ($img_width / 2) - ($the_box["width"] / 2),
-		!$img_height+15, $color, $font, $title); 
+		!$img_height+15, $color, $font, $title);
 
 	// Saving banner
 	if (imagepng($dst_img,$filename)) {

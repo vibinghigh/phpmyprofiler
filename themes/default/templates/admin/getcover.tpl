@@ -1,6 +1,6 @@
 {include file="admin/header.tpl"}
 
-{if $Error}
+{if isset($Error)}
     <div id="mainerror">
 	<div class="error_box">
 	    <div class="error_headline">{t}Error{/t}</div>

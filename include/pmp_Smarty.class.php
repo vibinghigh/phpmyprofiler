@@ -23,17 +23,18 @@ class pmp_Smarty extends Smarty {
 
 	public function __construct(){
 		// selfpointer needed by some other class methods
-		$this->smarty = $this;
+		// $this->smarty = $this;
+		parent::__construct();
 		if ( is_callable('mb_internal_encoding') ) {
 			mb_internal_encoding(SMARTY_RESOURCE_CHAR_SET);
 		}
 		$this->start_time = microtime(true);
 		// set default dirs
-		$this->setTemplateDir('.' . DS . 'templates' . DS);
-		$this->setCompileDir('.' . DS . 'templates_c' . DS);
+		$this->setTemplateDir('.' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR);
+		$this->setCompileDir('.' . DIRECTORY_SEPARATOR . 'templates_c' . DIRECTORY_SEPARATOR);
 		$this->setPluginsDir(SMARTY_PLUGINS_DIR);
-		$this->setCacheDir('.' . DS . 'cache' . DS);
-		$this->setConfigDir('.' . DS . 'configs' . DS);
+		$this->setCacheDir('.' . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR);
+		$this->setConfigDir('.' . DIRECTORY_SEPARATOR . 'configs' . DIRECTORY_SEPARATOR);
 
 		$this->debug_tpl = 'file:' . dirname(__FILE__) . '/debug.tpl';
 		if ( isset($_SERVER['SCRIPT_NAME']) ) {
@@ -41,7 +42,7 @@ class pmp_Smarty extends Smarty {
 		}
 	}
 
-	public function setTemplateDir($template) {
+	public function setTemplateDir($template, $isConfig = false) {
 		global $pmp_theme;
 
 		if ( file_exists(_PMP_REL_PATH . '/themes/' . $pmp_theme . '/templates/' . $template) ) {
